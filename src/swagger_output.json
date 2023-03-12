@@ -1,0 +1,1042 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "FYP",
+    "description": "My APIs",
+    "version": "1.0.0"
+  },
+  "host": "localhost:3030",
+  "basePath": "/",
+  "schemes": [
+    "http",
+    "https"
+  ],
+  "securityDefinitions": {
+    "Api_Key": {
+      "type": "apiKey",
+      "in": "header",
+      "name": "apiKey",
+      "desription": "Put in the api key"
+    },
+    "Authorization": {
+      "type": "apiKey",
+      "in": "header",
+      "name": "authorization",
+      "desription": "Put in your bearer token"
+    }
+  },
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/internalAccounts": {
+      "get": {
+        "tags": [
+          "Account"
+        ],
+        "summary": "Get all internal accounts",
+        "description": "",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        },
+        "security": [
+          {
+            "Api_Key": [],
+            "Authorization": []
+          }
+        ]
+      }
+    },
+    "/internalAccount": {
+      "get": {
+        "tags": [
+          "Account"
+        ],
+        "summary": "Get internal account by Id",
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        },
+        "security": [
+          {
+            "Api_Key": [],
+            "Authorization": []
+          }
+        ]
+      },
+      "post": {
+        "tags": [
+          "Account"
+        ],
+        "summary": "Add internal account",
+        "description": "",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "AccountNumber": {
+                  "type": "number",
+                  "example": 1234567890
+                },
+                "AccountName": {
+                  "type": "string",
+                  "example": "FYP_POOL_Account"
+                },
+                "Currency": {
+                  "type": "string",
+                  "example": "string"
+                },
+                "Code": {
+                  "type": "string",
+                  "example": "code"
+                },
+                "Balance": {
+                  "type": "number",
+                  "example": 0
+                },
+                "Status": {
+                  "type": "string",
+                  "example": "Active"
+                },
+                "Category": {
+                  "type": "string",
+                  "example": "string"
+                },
+                "Description": {
+                  "type": "string",
+                  "example": "string"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        },
+        "security": [
+          {
+            "Api_Key": [],
+            "Authorization": []
+          }
+        ]
+      }
+    },
+    "/diagnoseSkinPic": {
+      "post": {
+        "tags": [
+          "Diagnose"
+        ],
+        "summary": "Visual diagnosis for skin",
+        "description": "",
+        "parameters": [
+          {
+            "name": "pic",
+            "in": "formData",
+            "type": "file",
+            "required": true,
+            "description": "skin disease diagnosis"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "security": [
+          {
+            "Api_Key": [],
+            "Authorization": []
+          }
+        ]
+      }
+    },
+    "/get/refreshToken": {
+      "get": {
+        "tags": [
+          "Authorization"
+        ],
+        "summary": "Get refresh token from expired token",
+        "description": "",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        },
+        "security": [
+          {
+            "Api_Key": [],
+            "Authorization": []
+          }
+        ]
+      }
+    },
+    "/generate/otp": {
+      "post": {
+        "tags": [
+          "Authorization"
+        ],
+        "summary": "Change user email",
+        "description": "",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        },
+        "security": [
+          {
+            "Api_Key": [],
+            "Authorization": []
+          }
+        ]
+      }
+    },
+    "/signup": {
+      "post": {
+        "tags": [
+          "Authorization"
+        ],
+        "summary": "Signup for users",
+        "description": "",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "Firstname": {
+                  "type": "string",
+                  "example": "isaiah"
+                },
+                "Lastname": {
+                  "type": "string",
+                  "example": "Ekundayo"
+                },
+                "Role": {
+                  "type": "string",
+                  "example": "User"
+                },
+                "Email": {
+                  "type": "string",
+                  "example": "isaiahekundayo17@gmail.com"
+                },
+                "Password": {
+                  "type": "string",
+                  "example": "1234567!"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "security": [
+          {
+            "Api_Key": [],
+            "Authorization": []
+          }
+        ]
+      }
+    },
+    "/signin": {
+      "post": {
+        "tags": [
+          "Authorization"
+        ],
+        "summary": "Signin for users",
+        "description": "",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "Email": {
+                  "type": "string",
+                  "example": "isaiahekundayo17@gmail.com"
+                },
+                "Password": {
+                  "type": "string",
+                  "example": "1234567!"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "security": [
+          {
+            "Api_Key": [],
+            "Authorization": []
+          }
+        ]
+      }
+    },
+    "/change/password": {
+      "post": {
+        "tags": [
+          "Authorization"
+        ],
+        "summary": "Change user password",
+        "description": "",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "OldPassword": {
+                  "type": "string",
+                  "example": "1234567!"
+                },
+                "NewPassword": {
+                  "type": "string",
+                  "example": "1234567!"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        },
+        "security": [
+          {
+            "Api_Key": [],
+            "Authorization": []
+          }
+        ]
+      }
+    },
+    "/change/email": {
+      "post": {
+        "tags": [
+          "Authorization"
+        ],
+        "summary": "Change user email",
+        "description": "",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "NewEmail": {
+                  "type": "string",
+                  "example": "isaiahekundayo17@gmail.com"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        },
+        "security": [
+          {
+            "Api_Key": [],
+            "Authorization": []
+          }
+        ]
+      }
+    },
+    "/change/phoneNo": {
+      "post": {
+        "tags": [
+          "Authorization"
+        ],
+        "summary": "Change user phone no",
+        "description": "",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "NewPhoneNo": {
+                  "type": "string",
+                  "example": "+2347036115256"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        },
+        "security": [
+          {
+            "Api_Key": [],
+            "Authorization": []
+          }
+        ]
+      }
+    },
+    "/validate/email": {
+      "post": {
+        "tags": [
+          "Authorization"
+        ],
+        "summary": "Change user password",
+        "description": "",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "OldPassword": {
+                  "type": "string",
+                  "example": "1234567!"
+                },
+                "NewPassword": {
+                  "type": "string",
+                  "example": "1234567!"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        },
+        "security": [
+          {
+            "Api_Key": [],
+            "Authorization": []
+          }
+        ]
+      }
+    },
+    "/validate/phone": {
+      "post": {
+        "tags": [
+          "Authorization"
+        ],
+        "summary": "Change user password",
+        "description": "",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "OldPassword": {
+                  "type": "string",
+                  "example": "1234567!"
+                },
+                "NewPassword": {
+                  "type": "string",
+                  "example": "1234567!"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        },
+        "security": [
+          {
+            "Api_Key": [],
+            "Authorization": []
+          }
+        ]
+      }
+    },
+    "/activate/user": {
+      "post": {
+        "tags": [
+          "Authorization"
+        ],
+        "summary": "Activate user",
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        },
+        "security": [
+          {
+            "Api_Key": [],
+            "Authorization": []
+          }
+        ]
+      }
+    },
+    "/deactivate/user": {
+      "post": {
+        "tags": [
+          "Authorization"
+        ],
+        "summary": "Activate user",
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        },
+        "security": [
+          {
+            "Api_Key": [],
+            "Authorization": []
+          }
+        ]
+      }
+    },
+    "/message": {
+      "post": {
+        "tags": [
+          "Consultation"
+        ],
+        "summary": "Send Message",
+        "description": "",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "Participant": {
+                  "type": "string",
+                  "example": "123KJKHNOIHJ23KJLOI4K56"
+                },
+                "Message": {
+                  "type": "string",
+                  "example": "How are you doing?"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        },
+        "security": [
+          {
+            "Api_Key": [],
+            "Authorization": []
+          }
+        ]
+      },
+      "get": {
+        "tags": [
+          "Consultation"
+        ],
+        "summary": "Get Message",
+        "description": "",
+        "parameters": [
+          {
+            "name": "Participant",
+            "in": "query",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        },
+        "security": [
+          {
+            "Api_Key": [],
+            "Authorization": []
+          }
+        ]
+      }
+    },
+    "/all_user/message": {
+      "get": {
+        "tags": [
+          "Consultation"
+        ],
+        "summary": "Get All user's Messages",
+        "description": "",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        },
+        "security": [
+          {
+            "Api_Key": [],
+            "Authorization": []
+          }
+        ]
+      }
+    },
+    "/getProfilebyId": {
+      "get": {
+        "tags": [
+          "Profile"
+        ],
+        "summary": "Get profile by Id",
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        },
+        "security": [
+          {
+            "Api_Key": [],
+            "Authorization": []
+          }
+        ]
+      }
+    },
+    "/getProfile": {
+      "get": {
+        "tags": [
+          "Profile"
+        ],
+        "summary": "Get profile",
+        "description": "",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        },
+        "security": [
+          {
+            "Api_Key": [],
+            "Authorization": []
+          }
+        ]
+      }
+    },
+    "/update/profile": {
+      "post": {
+        "tags": [
+          "Profile"
+        ],
+        "summary": "Update user profile",
+        "description": "",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "Firstname": {
+                  "type": "string",
+                  "example": "isaiah"
+                },
+                "Lastname": {
+                  "type": "string",
+                  "example": "Ekundayo"
+                },
+                "Username": {
+                  "type": "string",
+                  "example": "Ekundee"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        },
+        "security": [
+          {
+            "Api_Key": [],
+            "Authorization": []
+          }
+        ]
+      }
+    },
+    "/rate/user": {
+      "post": {
+        "tags": [
+          "Rating and Reviews"
+        ],
+        "summary": "This is to rate users",
+        "description": "",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "RateeId": {
+                  "type": "string",
+                  "example": "1246789043423456435"
+                },
+                "StarRating": {
+                  "type": "number",
+                  "example": 5
+                },
+                "ReviewMessage": {
+                  "type": "string",
+                  "example": "This is my review message"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        },
+        "security": [
+          {
+            "Api_Key": [],
+            "Authorization": []
+          }
+        ]
+      }
+    },
+    "/users/today/rating": {
+      "get": {
+        "tags": [
+          "Rating and Reviews"
+        ],
+        "summary": "This is to get all ratings and reviews for today",
+        "description": "",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "security": [
+          {
+            "Api_Key": [],
+            "Authorization": []
+          }
+        ]
+      }
+    },
+    "/user/rating": {
+      "get": {
+        "tags": [
+          "Rating and Reviews"
+        ],
+        "summary": "This is to get a user ratings and reviews",
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "security": [
+          {
+            "Api_Key": [],
+            "Authorization": []
+          }
+        ]
+      }
+    },
+    "/user/today/rating": {
+      "get": {
+        "tags": [
+          "Rating and Reviews"
+        ],
+        "summary": "This is to get a user ratings and reviews for today",
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "security": [
+          {
+            "Api_Key": [],
+            "Authorization": []
+          }
+        ]
+      }
+    },
+    "/user/star/rating": {
+      "get": {
+        "tags": [
+          "Rating and Reviews"
+        ],
+        "summary": "This is to get user star rating",
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "security": [
+          {
+            "Api_Key": [],
+            "Authorization": []
+          }
+        ]
+      }
+    },
+    "/users/star/rating": {
+      "get": {
+        "tags": [
+          "Rating and Reviews"
+        ],
+        "summary": "This is to get all user star rating",
+        "description": "",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "security": [
+          {
+            "Api_Key": [],
+            "Authorization": []
+          }
+        ]
+      }
+    },
+    "/transfer/funds": {
+      "get": {
+        "tags": [
+          "Wallet"
+        ],
+        "summary": "Transfer funds",
+        "description": "",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "ConsultantId": {
+                  "type": "string",
+                  "example": "1232_3242311_23232132_232323"
+                },
+                "Description": {
+                  "type": "string",
+                  "example": "This is a successful transaction"
+                },
+                "Amount": {
+                  "type": "number",
+                  "example": 50000
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        },
+        "security": [
+          {
+            "Api_Key": [],
+            "Authorization": []
+          }
+        ]
+      }
+    },
+    "/fund_with_card": {
+      "post": {
+        "tags": [
+          "Wallet"
+        ],
+        "summary": "Deposit with card",
+        "description": "",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "Amount": {
+                  "type": "string",
+                  "example": "40000"
+                },
+                "Cvv": {
+                  "type": "string",
+                  "example": "408"
+                },
+                "CardNumber": {
+                  "type": "string",
+                  "example": "4084084084084081"
+                },
+                "ExpiryDate": {
+                  "type": "string",
+                  "example": "01/99"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        },
+        "security": [
+          {
+            "Api_Key": [],
+            "Authorization": []
+          }
+        ]
+      }
+    }
+  }
+}

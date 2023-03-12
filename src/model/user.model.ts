@@ -1,17 +1,20 @@
-import mongoose, { model, Schema } from "mongoose";
+import mongoose, { model, Mongoose, Schema } from "mongoose";
+import { userRole, userStatus } from "../enum/utility.enum";
 
-export interface IUserSchema {
+export interface IUserSchema  extends mongoose.Document{
     Firstname : string,
     Lastname : string,
     Email : string,
-    Role : string,
+    Role : userRole,
     Phonenumber : string,
     Username : string,
     Password : string,
     Balance : number,
-    Otp : Schema.Types.ObjectId,
+    SystemId : string,
+    Otp : mongoose.Types.ObjectId,
     IsEmailVerified : boolean,
     IsPhoneNoVerified : boolean,
+    Status : userStatus,
 }
 
 const UserSchema = new Schema<IUserSchema>({
@@ -39,9 +42,12 @@ const UserSchema = new Schema<IUserSchema>({
     Balance : {
         type : Number
     },
+    SystemId : {
+        type : String
+    },
     Otp : {
-        type : mongoose.Types.ObjectId,
-        ref : "otp"
+        type : Schema.Types.ObjectId,
+        ref : "otps"
     },
     IsEmailVerified : {
         type : Boolean
@@ -49,7 +55,11 @@ const UserSchema = new Schema<IUserSchema>({
     IsPhoneNoVerified : {
         type : Boolean
     },
-})
+    Status : {
+        type : String,
+        enum : userStatus
+    }
+},{ timestamps : true})
 
 const UserModel = model("user", UserSchema)
 
