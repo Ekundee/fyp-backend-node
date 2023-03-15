@@ -96,6 +96,7 @@ export const visualSkinDiagnosis = async (DTOData : IVisualSkinDiagnoseDTO ) => 
          
  
      }catch(e : any){
+          console.log(e.message)
          return await Apiresponse(e.message, null) 
      }
  }

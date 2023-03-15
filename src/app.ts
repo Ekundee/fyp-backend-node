@@ -13,8 +13,14 @@ import walletRoute from "./route/wallet.route"
 import rateRoute from "./route/rate.route" 
 import messagingRoute from "./route/message.route"
 import { adminProtectedRouteChecker, apiKeyProtector, dbConnect } from "./service/utility.service";
+import cors from "cors"
 
 const app : Application = express()
+app.use(cors({
+     origin : ["http://localhost:3000"]
+}))
+
+
 app.use("/doc", swaggerUi.serve, swaggerUi.setup(swaggerFile))
 
 
