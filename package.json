@@ -6,7 +6,9 @@
   "license": "MIT",
   "scripts": {
     "dev": "ts-node-dev --transpile-only --respawn src/app.ts",
-    "swagger": "ts-node-dev swagger.ts"
+    "swagger": "ts-node-dev swagger.ts",
+    "build": "tsc",
+    "start": "node src/app.js"
   },
   "devDependencies": {
     "@types/axios": "^0.14.0",
