@@ -8,7 +8,6 @@ import { Apiresponse } from "./utility.service";
 // Send message
 export const sendMessage = async(sendMessageDto : sendMessageDto) =>{
     try{
-
         var userMessage = new MessageModel({
             Participant : sendMessageDto.ParticipantId,
             Sender : sendMessageDto.SenderId,

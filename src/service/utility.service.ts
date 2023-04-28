@@ -10,6 +10,7 @@ import { NextFunction, Request, Response } from "express";
 import UserModel from "../model/user.model";
 import OtpModel from "../model/otp.model";
 import axios from "axios";
+import winston from "winston"
 
 var response : IApiResponse
 
@@ -19,11 +20,14 @@ export const useAxios  = axios.create({})
 
 // Database conn
 export const dbConnect = () =>{
+     console.log("process.env.MONGO_URI")
+     console.log(process.env.MONGO_URI)
     try{
-        mongoose.connect(process.env.MONGO_URI ? process.env.MONGO_URI : "tool").then(()=>{
-            console.log("******-----Connected to Database{FYP}-----******")
-        })
+          mongoose.connect(process.env.MONGO_URI ? process.env.MONGO_URI : "tool").then(()=>{
+               console.log("******-----Connected to Database{FYP}-----******")
+          })
     }catch(e : any){
+          console.log(e)
         return e.data.response ? e.data.response : e.message
     }
 }
@@ -170,17 +174,19 @@ export const generateReference = async()=>{
 // Apiresponse
 export const Apiresponse = async(message : string, data : any)=>{
     try{
-        response = {
-            Message : message,
-            Data : data
-        } 
-        return response
+          response = {
+               Status : 200,
+               Message : message,
+               Data : data
+          } 
+          return response
     }catch(e : any){
-        response = {
-            Message : message,
-            Data : e.data.response
-        }
-        return response 
+          response = {
+               Status : 400,
+               Message : message,
+               Data : e.data.response
+          }
+          return response 
     }
 }
 
@@ -277,14 +283,9 @@ export const systemIdGenerator = async() =>{
 }
 
 
-
-
-
-
-
-
-
-
-
-
+// logger function
+export const logger =  winston.createLogger({
+     format : winston.format.simple(),
+     transports : [new winston.transports.Console]
+})
 

@@ -51,6 +51,7 @@ export const signUpController = async (req : Request, res : Response)=> {
     */
     
     try{
+          console.log("ji")
         const {Firstname, Lastname, Role, Email, Password} = req.body
         
         const userData : signUpDto = {

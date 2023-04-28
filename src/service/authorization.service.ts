@@ -2,7 +2,7 @@ import { statusMessage, userRole, userStatus } from "../enum/utility.enum";
 import { changeEmailDto, changePasswordDto, changePhoneNumberDto, getRefreshTokenDto, signInDto, signUpDto, validateEmailDto } from "../inteface/authorization.interface";
 import { registrationMail } from "../mails";
 import UserModel, { IUserSchema } from "../model/user.model";
-import { Apiresponse, generateToken, mailer, OtpGenerator, passwordHasher, systemIdGenerator } from "./utility.service";
+import { Apiresponse, generateToken, logger, mailer, OtpGenerator, passwordHasher, systemIdGenerator } from "./utility.service";
 import bcrypt from "bcrypt"
 import { response } from "express";
 import mongoose from "mongoose";
@@ -23,7 +23,9 @@ export const getRefreshToken = async(userdata : getRefreshTokenDto)=>{
 
 export const signUp = async (userData : signUpDto ) => {
     try{
-        var response 
+          console.log("hi")
+          logger.info("hi")
+        var response;
 
         if (userData.Email == null || userData.Password == null) return await Apiresponse(statusMessage.NULL_VALUES, null);
 
