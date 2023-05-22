@@ -172,17 +172,19 @@ export const generateReference = async()=>{
 
 
 // Apiresponse
-export const Apiresponse = async(message : string, data : any)=>{
+export const Apiresponse = async(status : number, sMessage : string, message : string, data : any)=>{
     try{
           response = {
-               Status : 200,
-               Message : message,
-               Data : data
+               Status : status ? status : 400 ,
+               StatusMessage : sMessage ? sMessage : "successful",
+               Message : message ? message : "message",
+               Data : data ? data : "data"
           } 
           return response
     }catch(e : any){
           response = {
                Status : 400,
+               StatusMessage : sMessage,
                Message : message,
                Data : e.data.response
           }

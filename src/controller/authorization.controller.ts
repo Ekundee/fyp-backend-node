@@ -50,22 +50,22 @@ export const signUpController = async (req : Request, res : Response)=> {
         }]
     */
     
-    try{
-          console.log("ji")
-        const {Firstname, Lastname, Role, Email, Password} = req.body
-        
-        const userData : signUpDto = {
-            Firstname : Firstname,
-            Lastname : Lastname,
-            Role : Role,
-            Email : Email,
-            Password : Password
-        } 
+     try{
+          const {Firstname, Lastname, Role, Email, Password} = req.body
+          
+          const userData : signUpDto = {
+               Firstname : Firstname,
+               Lastname : Lastname,
+               Role : Role,
+               Email : Email,
+               Password : Password
+          } 
 
-        const signup = await signUp(userData);
-        res.status(200).json(signup)
+          const signup = await signUp(userData);
+          res.status(200).json(signup)
     }catch(e : any){
-        return e.message
+          console.log(e.message)
+          return e.message
     }
 }
 

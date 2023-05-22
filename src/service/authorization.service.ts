@@ -14,23 +14,21 @@ export const getRefreshToken = async(userdata : getRefreshTokenDto)=>{
         const response = {
             AuthToken : token
         }
-        return await Apiresponse(statusMessage.SUCCESSFUL,response)
+        return await Apiresponse(200,statusMessage.SUCCESSFUL,response)
     }catch(e : any){
-        return await Apiresponse(e.message, null) 
+        return await Apiresponse(200,e.message, null) 
     }
 }
 
 
 export const signUp = async (userData : signUpDto ) => {
     try{
-          console.log("hi")
-          logger.info("hi")
         var response;
 
-        if (userData.Email == null || userData.Password == null) return await Apiresponse(statusMessage.NULL_VALUES, null);
+        if (userData.Email == null || userData.Password == null) return await Apiresponse(400, statusMessage.UNSUCCESSFUL, "User does not exist", null);
 
         const user = await UserModel.findOne({Email : userData.Email})
-        if (user != null) return await Apiresponse( statusMessage.EXISTS, null) 
+        if (user != null) return await Apiresponse(400, statusMessage.UNSUCCESSFUL, "User already exists", null) 
 
         // hash password
         const hashedPassword : string = await passwordHasher(userData!.Password) 
@@ -64,44 +62,45 @@ export const signUp = async (userData : signUpDto ) => {
             User : savedUser,
             AuthToken : await generateToken(savedUser._id, savedUser.Role)
         }
-        return await Apiresponse(statusMessage.SUCCESSFUL, data)
+
+        return await Apiresponse(200,statusMessage.SUCCESSFUL,"Registration successful", data)
 
     }catch(e : any){
-        return await Apiresponse(e.message, null) 
+          return await Apiresponse(200,statusMessage.UNSUCCESSFUL, e.message, null) 
     }
 }
 
 export const signIn = async (userData : signInDto ) => {
-    try{
-        if (userData.Email == null || userData.Password == null) return await Apiresponse(statusMessage.NULL_VALUES, null) ;
+     try{
+          if (userData.Email == null || userData.Password == null) return await Apiresponse(400,statusMessage.UNSUCCESSFUL, "Please fill all fields",null) ;
 
-        const user = await UserModel.findOne({Email : userData.Email})
-        if (user == null) return await  Apiresponse(statusMessage.INEXISTENT, null)  
+          const user = await UserModel.findOne({Email : userData.Email})
+          if (user == null) return await  Apiresponse(400, statusMessage.UNSUCCESSFUL, "User does not exist", null)  
 
-        const isPasswordCorrect = await bcrypt.compare(userData.Password, user!.Password)
+          const isPasswordCorrect = await bcrypt.compare(userData.Password, user!.Password)
 
-        if (!isPasswordCorrect) return await Apiresponse( statusMessage.INCORRECT_DATA, null)  
+          if (!isPasswordCorrect) return await Apiresponse(400, statusMessage.UNSUCCESSFUL, "Incorrect password", null)  
 
-        const response = {
-            User : user,
-            AuthToken : await generateToken(user._id, user.Role)
-        }
-        return await Apiresponse( statusMessage.SUCCESSFUL, response)  
+          const response = {
+               User : user,
+               AuthToken : await generateToken(user._id, user.Role)
+          }
+          return await Apiresponse(200, statusMessage.SUCCESSFUL, "Login successful", response)  
         
 
-    }catch(e : any){
-        return await Apiresponse(e.message, null) 
-    }
+     }catch(e : any){
+          return await Apiresponse(200,statusMessage.UNSUCCESSFUL, e.message, null) 
+     }
 }
 
 export const changePassword = async (userData : changePasswordDto ) => {
     try{
 
         const user = await UserModel.findById(userData.Id)
-        if (user == null) return await Apiresponse(statusMessage.INEXISTENT, null)  
+        if (user == null) return await Apiresponse(200,statusMessage.INEXISTENT, null)  
 
         const isPasswordCorrect = await bcrypt.compare(userData.OldPassword, user!.Password)
-        if (!isPasswordCorrect) return await Apiresponse( statusMessage.INCORRECT_DATA, null)  
+        if (!isPasswordCorrect) return await Apiresponse(200, statusMessage.INCORRECT_DATA, null)  
         
         user!.Password = userData.NewPassword
         const savedUser = await user.save()
@@ -112,7 +111,7 @@ export const changePassword = async (userData : changePasswordDto ) => {
         return await  Apiresponse( statusMessage.SUCCESSFUL, response)  
 
     }catch(e : any){
-        return await Apiresponse(e.message, null) 
+        return await Apiresponse(200,e.message, null) 
     }
 }
 
@@ -122,10 +121,10 @@ export const changeEmail = async (userData : changeEmailDto ) => {
     try{
 
         const user = await UserModel.findById(userData.Id)
-        if (user == null) return await Apiresponse(statusMessage.INEXISTENT,null)
+        if (user == null) return await Apiresponse(200,statusMessage.INEXISTENT,null)
 
         const ifEmailExists = await UserModel.findOne({ Email : userData.NewEmail})
-        if(ifEmailExists != null) return await Apiresponse(statusMessage.EXISTS,null)
+        if(ifEmailExists != null) return await Apiresponse(200,statusMessage.EXISTS,null)
          
         user.Email = userData.NewEmail
         user.IsEmailVerified = false
@@ -135,10 +134,10 @@ export const changeEmail = async (userData : changeEmailDto ) => {
         const response = {
             User : savedUser,
         }
-        return  await Apiresponse(statusMessage.SUCCESSFUL, response)
+        return  await Apiresponse(200,statusMessage.SUCCESSFUL, response)
         
     }catch(e : any){
-        return await Apiresponse(e.message, null) 
+        return await Apiresponse(200,e.message, null) 
     }
 }
 
@@ -148,7 +147,7 @@ export const changePhoneNumber = async (userData : changePhoneNumberDto ) => {
     try{
 
         const user = await UserModel.findById(userData.Id)
-        if (user == null) return await Apiresponse(statusMessage.INEXISTENT,null)
+        if (user == null) return await Apiresponse(200,statusMessage.INEXISTENT,null)
 
         user.Phonenumber = userData.NewPhoneNo
         user.IsPhoneNoVerified = false
@@ -158,10 +157,10 @@ export const changePhoneNumber = async (userData : changePhoneNumberDto ) => {
         const response = {
             User : savedUser,
         }
-        return await Apiresponse(statusMessage.SUCCESSFUL, response)
+        return await Apiresponse(200,statusMessage.SUCCESSFUL, response)
 
     }catch(e : any){
-        return await Apiresponse(e.message, null) 
+        return await Apiresponse(200,e.message, null) 
     }
 }
 
@@ -171,16 +170,16 @@ export const activateUser = async (Id : any ) => {
     try{
 
         const user = await UserModel.findById(Id)
-        if (user == null) return await Apiresponse(statusMessage.INEXISTENT,null)
+        if (user == null) return await Apiresponse(200,statusMessage.INEXISTENT,null)
 
         user.Status = userStatus.ACTIVE
 
         await user.save()
        
-        return await Apiresponse(statusMessage.SUCCESSFUL, null)
+        return await Apiresponse(200,statusMessage.SUCCESSFUL, null)
 
     }catch(e : any){
-        return await Apiresponse(e.message, null) 
+        return await Apiresponse(200,e.message, null) 
     }
 }
 
@@ -189,16 +188,16 @@ export const deActivateUser = async (Id : any ) => {
     try{
 
         const user = await UserModel.findById(Id)
-        if (user == null) return await Apiresponse(statusMessage.INEXISTENT,null)
+        if (user == null) return await Apiresponse(200,statusMessage.INEXISTENT,null)
 
         user.Status = userStatus.INACTIVE
 
         await user.save()
      
-        return await Apiresponse(statusMessage.SUCCESSFUL, response)
+        return await Apiresponse(200,statusMessage.SUCCESSFUL, response)
 
     }catch(e : any){
-        return await Apiresponse(e.message, null) 
+        return await Apiresponse(200,e.message, null) 
     }
 }
 
@@ -206,7 +205,7 @@ export const deActivateUser = async (Id : any ) => {
 //     try{
 
 //         const user = await UserModel.findById(userData.Id)
-//         if (user == null) return await Apiresponse(statusMessage.INEXISTENT,null)
+//         if (user == null) return await Apiresponse(200,statusMessage.INEXISTENT,null)
 
 //         user.Phonenumber = userData.NewPhoneNo
 //         user.IsPhoneNoVerified = false
@@ -216,9 +215,9 @@ export const deActivateUser = async (Id : any ) => {
 //         const response = {
 //             User : user,
 //         }
-//         return await Apiresponse(statusMessage.SUCCESSFUL, response)
+//         return await Apiresponse(200,statusMessage.SUCCESSFUL, response)
 
 //     }catch(e : any){
-//         return await Apiresponse(e.message, null) 
+//         return await Apiresponse(200,e.message, null) 
 //     }
 // }

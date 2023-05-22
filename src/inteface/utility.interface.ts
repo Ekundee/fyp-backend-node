@@ -3,6 +3,7 @@ import { userRole } from "../enum/utility.enum";
 
 export interface IApiResponse {
      Status : number,
+     StatusMessage : string,
      Message : string,
      Data : any
 }

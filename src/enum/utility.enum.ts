@@ -1,5 +1,6 @@
 export enum statusMessage {
     SUCCESSFUL = "SUCCESSFUL",
+    UNSUCCESSFUL = "UNSUCCESSFUL",
     NULL_VALUES = "Fill in all the details",
     INEXISTENT = "Does not exist",
     INCORRECT_DATA = "Incorrect information",
