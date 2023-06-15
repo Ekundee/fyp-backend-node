@@ -1,22 +1,22 @@
 import { Request, Response } from "express";
-import { getAllUserMessageDto, getMessageDto, sendMessageDto } from "../inteface/message.interface";
-import { getAllUserMessage, getMessage, sendMessage } from "../service/message.service";
+import { getAllUserMessageDto, getMessageDto, getUserFriendDto, sendMessageDto } from "../inteface/message.interface";
+import { getAllUserMessage, getMessageWithParticipant, getUserFriend, sendMessage } from "../service/message.service";
 
 export const sendMessageController = async (req : Request, res : Response) =>{
     /*
-        #swagger.summary = "Send Message"
-        #swagger.tags = ["Consultation"]
-        #swagger.security = [{
-            "Api_Key" : [],
-            "Authorization" : [],
-        }]
-        #swagger.parameters["body"] = {
-            in : 'body',
-            schema : {
-              Participant : "123KJKHNOIHJ23KJLOI4K56",
-              Message : "How are you doing?" 
-            }
-        }
+          #swagger.summary = "Send Message"
+          #swagger.tags = ["Consultation"]
+          #swagger.security = [{
+               "Api_Key" : [],
+               "Authorization" : [],
+          }]
+          #swagger.parameters["body"] = {
+               in : 'body',
+               schema : {
+               Participant : "123KJKHNOIHJ23KJLOI4K56",
+               Message : "How are you doing?" 
+               }
+          }
     */
     try{
     
@@ -36,7 +36,7 @@ export const sendMessageController = async (req : Request, res : Response) =>{
     }
 }
 
-export const getMessageController = async (req : Request, res : Response) =>{
+export const getMessageWithParticipantController = async (req : Request, res : Response) =>{
     /*
         #swagger.summary = "Get Message"
         #swagger.tags = ["Consultation"]
@@ -53,12 +53,12 @@ export const getMessageController = async (req : Request, res : Response) =>{
         const { Id } = res.locals.decodedToken
         const { Participant } : any = req.query
 
-        const getMessageDto : getMessageDto = {
-            Id : Id,
-            Participant : Participant
-        }
+          const getMessageDto : getMessageDto = {
+               Id : Id,
+               Participant : Participant
+          }
 
-        const getMessageResponse = await getMessage(getMessageDto);
+        const getMessageResponse = await getMessageWithParticipant(getMessageDto);
         res.status(200).json(getMessageResponse)
     }catch(e : any){
         return e.data.response ? e.data.response : e.message
@@ -67,24 +67,49 @@ export const getMessageController = async (req : Request, res : Response) =>{
 
 
 export const getAllUserMessageController = async (req : Request, res : Response) =>{
-    /*
-        #swagger.summary = "Get All user's Messages"
-        #swagger.tags = ["Consultation"]
-        #swagger.security = [{
-            "Api_Key" : [],
-            "Authorization" : [],
-        }]
-    */
-    try{
-    
-        const { Id } = res.locals.decodedToken
+     /*
+         #swagger.summary = "Get All user's Messages"
+         #swagger.tags = ["Consultation"]
+         #swagger.security = [{
+             "Api_Key" : [],
+             "Authorization" : [],
+         }]
+     */
+     try{
+     
+         const { Id } = res.locals.decodedToken
+ 
+         const getAllMessageDto : getAllUserMessageDto = {
+             Id : Id,
+         }
+         const getAllUserMessageResponse = await getAllUserMessage(getAllMessageDto);
+         res.status(200).json(getAllUserMessageResponse)
+     }catch(e : any){
+         return e.data.response ? e.data.response : e.message
+     }
+ }
 
-        const getAllMessageDto : getAllUserMessageDto = {
-            Id : Id,
-        }
-        const getAllUserMessageResponse = await getAllUserMessage(getAllMessageDto);
-        res.status(200).json(getAllUserMessageResponse)
-    }catch(e : any){
-        return e.data.response ? e.data.response : e.message
-    }
-}
+ export const getUserFriendController = async (req : Request, res : Response) =>{
+     /*
+         #swagger.summary = "Get All user's friends (Consultant)"
+         #swagger.tags = ["Consultation"]
+         #swagger.security = [{
+             "Api_Key" : [],
+             "Authorization" : [],
+         }]
+     */
+     try{      
+     
+         const { Id } = res.locals.decodedToken
+ 
+         const getUserFriendDto : getUserFriendDto = {
+             Id : Id,
+         }
+         const getAllUserFriendResponse = await getUserFriend(getUserFriendDto);
+         res.status(200).json(getAllUserFriendResponse)
+     }catch(e : any){
+         return e.data.response ? e.data.response : e.message
+     }
+ }
+
+

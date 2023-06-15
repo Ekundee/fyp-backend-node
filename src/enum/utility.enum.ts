@@ -9,9 +9,9 @@ export enum statusMessage {
 } 
 
 export enum userRole {
-    USER = "User",
-    CONSULTANT = "Consultant",
-    ADMIN = "Admin",
+    USER = "USER",
+    CONSULTANT = "CONSULTANT",
+    ADMIN = "ADMIN",
 }
 
 export enum serviceCodes {

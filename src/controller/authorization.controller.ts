@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { statusMessage } from "../enum/utility.enum";
-import { signUpDto, signInDto, changePasswordDto, getRefreshTokenDto, changeEmailDto, changePhoneNumberDto } from "../inteface/authorization.interface";
-import { activateUser, changeEmail, changePassword, changePhoneNumber, deActivateUser, getRefreshToken, signIn, signUp } from "../service/authorization.service";
+import { signUpDto, signInDto, changePasswordDto, getRefreshTokenDto, changeEmailDto, changePhoneNumberDto, validateEmailDto } from "../inteface/authorization.interface";
+import { activateUser, changeEmail, changePassword, changePhoneNumber, deActivateUser, getRefreshToken, signIn, signUp, validateEmail } from "../service/authorization.service";
 import { Apiresponse, userOtpGenerator } from "../service/utility.service";
 
 
@@ -31,76 +31,85 @@ export const getRefreshTokenController = async(req : Request, res : Response)=>{
 }
 
 export const signUpController = async (req : Request, res : Response)=> {
-    /**
-        #swagger.summary = "Signup for users"
-        #swagger.tags = ["Authorization"]
-        #swagger.parameters["body"] = {
-            in:'body',
-            schema : {
-                "Firstname": "isaiah",
-                "Lastname": "Ekundayo",
-                "Role": "User",
-                "Email": "isaiahekundayo17@gmail.com",
-                "Password": "1234567!"
-            }
-        } 
-        #swagger.security = [{
-            "Api_Key" : [],
-            "Authorization" : [],
-        }]
-    */
-    
-     try{
-          const {Firstname, Lastname, Role, Email, Password} = req.body
-          
+     /**
+         #swagger.summary = "Signup for users"
+         #swagger.tags = ["Authorization"]
+         #swagger.parameters["body"] = {
+             in:'body',
+             schema : {
+                 "Firstname": "isaiah",
+                 "Lastname": "Ekundayo",
+                 "Role": "User",
+                 "Email": "isaiahekundayo17@gmail.com",
+                 "Password": "1234567!",
+                 "State" : "Lagos"
+             }
+         } 
+         #swagger.security = [{
+             "Api_Key" : [],
+             "Authorization" : [],
+         }]
+     */
+     
+      try{
+          const {Firstname, Lastname, Role, Email, Password, State, Specialization, LicenseNumber } = req.body
+           
           const userData : signUpDto = {
                Firstname : Firstname,
                Lastname : Lastname,
                Role : Role,
                Email : Email,
-               Password : Password
+               Password : Password,
+               State : State,
+               LicenseNumber : LicenseNumber,
+               Specialization : Specialization
           } 
-
+ 
           const signup = await signUp(userData);
           res.status(200).json(signup)
-    }catch(e : any){
-          console.log(e.message)
-          return e.message
-    }
-}
+     }catch(e : any){
+           console.log(e.message)
+           return e.message
+     }
+ }
 
 export const signInController = async (req : Request, res : Response)=> {
-    /*
-        #swagger.summary = "Signin for users"
-        #swagger.tags = ["Authorization"]
-        #swagger.security = [{
-            "Api_Key" : [],
-            "Authorization" : [],
-        }]
-        
-        #swagger.parameters["body"] = {
-            in:'body',
-            schema : {
-                "Email": "isaiahekundayo17@gmail.com",
-                "Password": "1234567!"
-            }
-        } 
-        
-    */
-    try{
-        const {Email, Password} = req.body
-        
-        const userData : signInDto = {
-            Email : Email,
-            Password : Password
-        } 
+     /*
+         #swagger.summary = "Signin for users"
+         #swagger.tags = ["Authorization"]
+         #swagger.security = [{
+             "Api_Key" : [],
+             "Authorization" : [],
+         }]
+         
+         #swagger.parameters["body"] = {
+             in:'body',
+             schema : {
+                 "Email": "isaiahekundayo17@gmail.com",
+                 "Password": "1234567!",
+                 "Role" : "U"
+             }
+         } 
+         
+     */
+     try{
+         const {Email, Password, Role} = req.body
+         
+           const userData : signInDto = {
+                Email : Email,
+                Password : Password,
+                Role : Role
+           } 
+ 
+         const signin = await signIn(userData);
+         res.status(200).json(signin)
+     }catch(e : any){
+         return e.message
+     }
+ }
 
-        const signin = await signIn(userData);
-        res.status(200).json(signin)
-    }catch(e : any){
-        return e.message
-    }
-}
+
+ 
 
 export const changePasswordController = async (req : Request, res : Response)=> {
     /*
@@ -243,25 +252,58 @@ export const activateUserController = async (req : Request, res : Response)=> {
 
 
 export const deActivateUserController = async (req : Request, res : Response)=> {
-    /*
-        #swagger.tags=["Authorization"]
-        #swagger.summary="Activate user"
-        #swagger.security=[{
-            "Api_Key" : [],
-            "Authorization" : [],
-        }]
+     /*
+         #swagger.tags=["Authorization"]
+         #swagger.summary="Activate user"
+         #swagger.security=[{
+             "Api_Key" : [],
+             "Authorization" : [],
+         }]
+ 
+         #swagger.parameters['id'] = {
+             in : 'query'
+         }
+     */
+     try{
+         const { Id } = res.locals.decodedToken
+         const activate_user = await deActivateUser(Id);
+         const response = await Apiresponse(statusMessage.SUCCESSFUL, activate_user)
+         res.status(200).json(response)
+     }catch(e : any){
+         return e.message
+     }
+ }
 
-        #swagger.parameters['id'] = {
-            in : 'query'
-        }
-    */
-    try{
-        const { Id } = res.locals.decodedToken
-        const activate_user = await deActivateUser(Id);
-        const response = await Apiresponse(statusMessage.SUCCESSFUL, activate_user)
-        res.status(200).json(response)
-    }catch(e : any){
-        return e.message
-    }
-}
+ 
+ export const validateEmailController = async (req : Request, res : Response)=> {
+     /*
+          #swagger.tags=["Authorization"]
+          #swagger.summary="Activate user"
+          #swagger.security=[{
+               "Api_Key" : [],
+               "Authorization" : [],
+          }]
+ 
+          #swagger.parameters['body'] = {
+               in : 'body',
+               schema : {
+                    "Otp" : 123456
+               }
+          }
+     */
+     try{
+          const { Id } = res.locals.decodedToken
+          const { Otp } = req.body
 
+          const userData : validateEmailDto = { 
+               Id : Id,
+               Otp : Otp
+          }
+          console.log(userData)
+          const response = await validateEmail(userData);
+          res.status(200).json(response)
+     }catch(e : any){
+         return e.message
+     }
+ }
+ 

@@ -106,11 +106,13 @@ export const OtpGenerator = async()=>{
 // user Otp
 export const userOtpGenerator = async(id : mongoose.Types.ObjectId)=>{
     try{
-        var value1 = Math.floor(Math.random() * 10)
+        var value1 = Math.floor(Math.random() * 10)  == 0 ? 2 : Math.floor(Math.random() * 10)
         var value2 = Math.floor(Math.random() * 10)
         var value3 = Math.floor(Math.random() * 10)
         var value4 = Math.floor(Math.random() * 10)
-        var otpString = value1 + "" + value2 + "" + value3 + "" + value4
+        var value5 = Math.floor(Math.random() * 10)
+        var value6 = Math.floor(Math.random() * 10)
+        var otpString = value1 + "" + value2 + "" + value3 + "" + value4 + "" + value5 + "" + value6
         var otp : number = parseInt(otpString)
 
         const user = await UserModel.findById(id)
@@ -146,28 +148,28 @@ export const userOtpGenerator = async(id : mongoose.Types.ObjectId)=>{
 
 // Protected Route
 export const protectedRoute = async(req : Request, res : Response, next : NextFunction) =>{
-    try{
-        const { authorization } : any = req.headers;
-        const token : string = authorization.split(" ")[1]
-        const secret : string = process.env.SECRET ? process.env.SECRET : "secret"
-        const decodedToken = jwt.verify(token, secret)
-        res.locals.decodedToken = decodedToken
-        return next()
-    }catch(e : any){
-        return res.status(401).json(await Apiresponse(statusMessage.UNAUTHORIZED, null))
-    }
+     try{
+          const { authorization } : any = req.headers;
+          const token : string = authorization.split(" ")[1]
+          const secret : string = process.env.SECRET ? process.env.SECRET : "secret"
+          const decodedToken = jwt.verify(token, secret)
+          res.locals.decodedToken = decodedToken
+          return next()
+     }catch(e : any){
+          return res.status(401).json(await Apiresponse(200,statusMessage.UNSUCCESSFUL, "User is not authorized to use this route", null))
+     }
 }
 
 
 // Generate reference
 export const generateReference = async()=>{
-    try {
-        var referenceNo = ((Date.now() + Math.random()) * 1000).toString()
-        var reference = "T"+referenceNo.slice(0,15)
-        return reference
-    }catch(e : any){
-        return e.data.response ? e.data.response : e.message
-    }
+     try {
+          var referenceNo = ((Date.now() + Math.random()) * 1000).toString()
+          var reference = "T"+referenceNo.slice(0,15)
+          return reference
+     }catch(e : any){
+          return e.data.response ? e.data.response : e.message
+     }
 }
 
 
@@ -190,7 +192,8 @@ export const Apiresponse = async(status : number, sMessage : string, message : s
           }
           return response 
     }
-}
+}  
+
 
 // Password Hasher
 export const passwordHasher = async(password : string): Promise<string> => {
@@ -261,7 +264,7 @@ export const adminProtectedRouteChecker = async(req : Request, res : Response, n
 export const adminProtectedRouteValidator = async(req : Request, res : Response, next : NextFunction) =>{
     try {
         const {decodedToken} = res.locals
-        if(!decodedToken) return res.status(401).json(await Apiresponse(statusMessage.UNAUTHORIZED, null))
+        if(!decodedToken) return res.status(401).json(await Apiresponse(401,statusMessage.UNAUTHORIZED, "Please login as an admin", null))
         if(!decodedToken.IsAdmin) return res.status(401).json(await Apiresponse(statusMessage.UNAUTHORIZED, null))
         return next()
     }catch(e : any){
@@ -291,3 +294,7 @@ export const logger =  winston.createLogger({
      transports : [new winston.transports.Console]
 })
 
+export function onlyUnique(value : any, index : any, array : any) {
+     return array.indexOf(value) === index;
+}
+  

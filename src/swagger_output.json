@@ -179,6 +179,41 @@
         ]
       }
     },
+    "/diagnoseSymptom": {
+      "post": {
+        "tags": [
+          "Diagnose"
+        ],
+        "summary": "Visual diagnosis for skin",
+        "description": "",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "SymptomArray": {
+                  "type": "string",
+                  "example": "[1,2,3,4]"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "security": [
+          {
+            "Api_Key": [],
+            "Authorization": []
+          }
+        ]
+      }
+    },
     "/get/refreshToken": {
       "get": {
         "tags": [
@@ -260,6 +295,10 @@
                 "Password": {
                   "type": "string",
                   "example": "1234567!"
+                },
+                "State": {
+                  "type": "string",
+                  "example": "Lagos"
                 }
               }
             }
@@ -299,6 +338,10 @@
                 "Password": {
                   "type": "string",
                   "example": "1234567!"
+                },
+                "Role": {
+                  "type": "string",
+                  "example": "U"
                 }
               }
             }
@@ -440,7 +483,7 @@
         "tags": [
           "Authorization"
         ],
-        "summary": "Change user password",
+        "summary": "Activate user",
         "description": "",
         "parameters": [
           {
@@ -449,13 +492,9 @@
             "schema": {
               "type": "object",
               "properties": {
-                "OldPassword": {
-                  "type": "string",
-                  "example": "1234567!"
-                },
-                "NewPassword": {
-                  "type": "string",
-                  "example": "1234567!"
+                "Otp": {
+                  "type": "number",
+                  "example": 123456
                 }
               }
             }
@@ -619,7 +658,9 @@
             "Authorization": []
           }
         ]
-      },
+      }
+    },
+    "/getMessageWithParticipant": {
       "get": {
         "tags": [
           "Consultation"
@@ -655,6 +696,30 @@
           "Consultation"
         ],
         "summary": "Get All user's Messages",
+        "description": "",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        },
+        "security": [
+          {
+            "Api_Key": [],
+            "Authorization": []
+          }
+        ]
+      }
+    },
+    "/all_user/friends": {
+      "get": {
+        "tags": [
+          "Consultation"
+        ],
+        "summary": "Get All user's friends (Consultant)",
         "description": "",
         "parameters": [],
         "responses": {

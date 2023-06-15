@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { activateUserController, changeEmailController, changePasswordController, changePhoneNumberController, deActivateUserController, generateOtpController, getRefreshTokenController, signInController, signUpController } from "../controller/authorization.controller";
+import { activateUserController, changeEmailController, changePasswordController, changePhoneNumberController, deActivateUserController, generateOtpController, getRefreshTokenController, signInController, signUpController, validateEmailController } from "../controller/authorization.controller";
 import { changePhoneNumber } from "../service/authorization.service";
 import { adminProtectedRouteValidator, protectedRoute } from "../service/utility.service";
 
@@ -19,7 +19,7 @@ route.post("/change/email", protectedRoute, changeEmailController)
 
 route.post("/change/phoneNo", protectedRoute, changePhoneNumberController)
 
-route.post("/validate/email", protectedRoute, changePasswordController)
+route.post("/validate/email", protectedRoute, validateEmailController)
 
 route.post("/validate/phone", protectedRoute, changePasswordController)
 

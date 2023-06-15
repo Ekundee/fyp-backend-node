@@ -8,18 +8,18 @@ export interface IMessageSchema extends mongoose.Document{
 }
 
 const MessageSchema = new Schema<IMessageSchema>({
-    Participant : {
-        type : Schema.Types.ObjectId
-    },
-    Sender : {
-        type : Schema.Types.ObjectId
-    },
-    Message : {
-        type : String
-    },
-    Timestamp : {
-        type : String
-    }
+     Participant : {
+          type : Schema.Types.ObjectId
+     },
+     Sender : {
+          type : Schema.Types.ObjectId
+     },
+     Message : {
+          type : String
+     },
+     Timestamp : {
+          type : String
+     }
 })
 
 const MessageModel = mongoose.model("message", MessageSchema)

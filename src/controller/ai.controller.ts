@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
-import { IVisualSkinDiagnoseDTO } from "../inteface/ai.interface";
-import { visualSkinDiagnosis } from "../service/ai.service";
+import { ISymptomDiagnoseDTO, IVisualSkinDiagnoseDTO } from "../inteface/ai.interface";
+import { symptomDiagnosis, visualSkinDiagnosis } from "../service/ai.service";
 
 export async function visualSkinDiagnosisController(req : Request, res : Response){
      try{
@@ -24,6 +24,38 @@ export async function visualSkinDiagnosisController(req : Request, res : Respons
                SkinPic : req.file
           }
           const response = await visualSkinDiagnosis(visualSkinDiagnoseDTO)
+          res.json(response)
+
+     }catch(e : any){
+          console.log("hi")
+          return e.data.response ? e.data.response : e.message
+     }
+}
+
+
+
+export async function symptomDiagnosisController(req : Request, res : Response){
+     try{
+          /*
+               #swagger.summary = "Visual diagnosis for skin"
+               #swagger.tags = ["Diagnose"]
+               #swagger.security = [{
+                    "Api_Key" : [],
+                    "Authorization" : [],
+               }]
+               
+               #swagger.parameters['body'] = {
+                    in: 'body',
+                    schema: {
+                         SymptomArray:'[1,2,3,4]'
+                    }
+               } 
+               
+          */
+          const symptomDiagnoseDTO : ISymptomDiagnoseDTO = {
+               SymptomArray : req.body.SymptomArray
+          }
+          const response = await symptomDiagnosis(symptomDiagnoseDTO)
           res.json(response)
 
      }catch(e : any){

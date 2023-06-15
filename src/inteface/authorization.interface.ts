@@ -3,17 +3,21 @@ import { userRole } from "../enum/utility.enum";
 
 export interface signInDto {
     Email : string,
-    Password : string
+    Password : string,
+    Role : string
 }
 
 export interface signUpDto {
-    Firstname : string,
-    Lastname : string,
-    Email : string,
-    Role : string,
-    Password : string
+     Firstname : string,
+     Lastname : string,
+     Email : string,
+     Role : string,
+     Password : string,
+     State : string,
+     LicenseNumber : number,
+     Specialization : string
 }
-
+ 
 export interface changePasswordDto{
     Id : mongoose.Types.ObjectId,
     OldPassword : string,
@@ -38,5 +42,5 @@ export interface getRefreshTokenDto {
 
 export interface validateEmailDto { 
     Id : mongoose.Types.ObjectId,
-    OTP : string
+    Otp : number
 }

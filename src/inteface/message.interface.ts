@@ -13,5 +13,9 @@ export interface getMessageDto {
 
 
 export interface getAllUserMessageDto {
-    Id : mongoose.Types.ObjectId,
-}
+     Id : mongoose.Types.ObjectId,
+ }
+
+ export interface getUserFriendDto {
+     Id : mongoose.Types.ObjectId,
+ }
