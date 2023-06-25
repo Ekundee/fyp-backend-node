@@ -27,7 +27,6 @@ export async function visualSkinDiagnosisController(req : Request, res : Respons
           res.json(response)
 
      }catch(e : any){
-          console.log("hi")
           return e.data.response ? e.data.response : e.message
      }
 }
@@ -59,7 +58,6 @@ export async function symptomDiagnosisController(req : Request, res : Response){
           res.json(response)
 
      }catch(e : any){
-          console.log("hi")
           return e.data.response ? e.data.response : e.message
      }
 }

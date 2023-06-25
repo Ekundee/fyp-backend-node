@@ -1,5 +1,5 @@
 import { ISymptomDiagnoseDTO, IVisualSkinDiagnoseDTO } from "../inteface/ai.interface";
-import * as tf from "@tensorflow/tfjs-node-gpu"
+import * as tf from "@tensorflow/tfjs-node"
 import { Apiresponse } from "./utility.service";
 import { statusMessage } from "../enum/utility.enum";
 
@@ -92,12 +92,12 @@ export const visualSkinDiagnosis = async (DTOData : IVisualSkinDiagnoseDTO ) => 
                ConfirmedDisease : confirmedDisease, 
                OtherDisease : resultsArray
           }
-         return await Apiresponse( statusMessage.SUCCESSFUL, response)  
+         return await Apiresponse(200,statusMessage.SUCCESSFUL, "Disease classified", response)  
          
  
      }catch(e : any){
           console.log(e.message)
-         return await Apiresponse(e.message, null) 
+         return await Apiresponse(200, statusMessage.UNSUCCESSFUL, e.message, null) 
      }
  }
 
@@ -165,7 +165,7 @@ export const symptomDiagnosis = async (DTOData : ISymptomDiagnoseDTO ) => {
  
      }catch(e : any){
           console.log(e.message)
-         return await Apiresponse(e.message, null) 
+         return await Apiresponse(200, statusMessage.UNSUCCESSFUL, e.message, null) 
      }
  }
 

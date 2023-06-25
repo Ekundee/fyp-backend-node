@@ -8,7 +8,7 @@ export interface sendMessageDto {
 
 export interface getMessageDto {
     Id : mongoose.Types.ObjectId,
-    Participant : mongoose.Types.ObjectId
+    ChatRoom : mongoose.Types.ObjectId,
 }
 
 

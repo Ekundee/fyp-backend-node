@@ -5,12 +5,13 @@ import TransactionModel from "../model/transaction.model";
 import UserModel from "../model/user.model";
 import { Apiresponse, generateReference, useAxios } from "./utility.service";
 
-
 // Transfer
 export const transferFunds = async(transferFundDto : transferFundDto) =>{
+    var c =await generateReference()
+
     try{
         // generate reference
-        const trxReference = await generateReference();
+        const trxReference = "p";
         const user = await UserModel.findById(transferFundDto.UserId)
         const consultant = await UserModel.findById(transferFundDto.ConsultantId)
         const dateNTime = (new Date()).toLocaleDateString()
@@ -81,12 +82,12 @@ export const transferFunds = async(transferFundDto : transferFundDto) =>{
             DestNumber : 123456789,
             Reference : trxReference
         }
-        return await Apiresponse(statusMessage.SUCCESSFUL, response) 
+        return await Apiresponse(200, statusMessage.SUCCESSFUL, "Funds transferred", response) 
 
 
         // save changes
     }catch(e : any){
-        return await Apiresponse(e.message, null) 
+        return await Apiresponse(400, statusMessage.UNSUCCESSFUL, e.message, null) 
     }
 }
 
@@ -96,7 +97,7 @@ export const cardFunding = async (cardFundingDto : CardFundingDto) =>{
     try{
 
         const user = await UserModel.findById(cardFundingDto.Id)
-        if(user == null) return await Apiresponse(statusMessage.INEXISTENT, null)
+        if(user == null) return await Apiresponse(400, statusMessage.UNSUCCESSFUL, "User does not exist", null)
 
         const paystackCardDto : paystackCardDto  = {
             email : user!.Email,
@@ -114,10 +115,10 @@ export const cardFunding = async (cardFundingDto : CardFundingDto) =>{
 
         // const creditAccountResponse = await fundWallet(id, role, amount)
 
-        return await Apiresponse(statusMessage.SUCCESSFUL, null) 
+        return await Apiresponse(200, statusMessage.SUCCESSFUL, "wallet funded", null) 
    
     }catch(e : any){
-        return await Apiresponse(e.message, null) 
+        return await Apiresponse(400, statusMessage.UNSUCCESSFUL, e.message, null) 
     }
 }
 
@@ -134,7 +135,7 @@ export const paystackPayWithCard = async (paystackCardDto : paystackCardDto) => 
 
         return payWithCardPaystack.data
     }catch(e : any){
-        return await Apiresponse(e.message, null) 
+        return await Apiresponse(400, statusMessage.UNSUCCESSFUL, e.message, null)
     }
 }
 

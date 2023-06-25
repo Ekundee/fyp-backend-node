@@ -45,18 +45,18 @@ export const getMessageWithParticipantController = async (req : Request, res : R
             "Authorization" : [],
         }]
         #swagger.parameters["query"] = {
-            name : "Participant"
+            name : "ChatRoom"
         }
     */
     try{
     
+        const { ChatRoom } : any = req.query
         const { Id } = res.locals.decodedToken
-        const { Participant } : any = req.query
 
-          const getMessageDto : getMessageDto = {
-               Id : Id,
-               Participant : Participant
-          }
+        const getMessageDto : getMessageDto = {
+            Id : Id,
+            ChatRoom : ChatRoom
+        }
 
         const getMessageResponse = await getMessageWithParticipant(getMessageDto);
         res.status(200).json(getMessageResponse)

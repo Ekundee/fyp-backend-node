@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { updateProfileDto } from "../inteface/profile.interface";
-import { getProfile, updateProfile } from "../service/profile.service";
+import { getAllConsultants, getProfile, updateProfile } from "../service/profile.service";
 
 export const getProfileByIdController = async (req : Request, res : Response)=> {
     /**
@@ -74,3 +74,22 @@ export const updateProfileController = async (req : Request, res : Response) =>{
         return e
     }
 }
+
+
+export const  getAllConsultantsController = async (req : Request, res : Response) =>{
+    /*
+        #swagger.summary = "Update user profile"
+        #swagger.tags = ["Profile"]
+        #swagger.security = [{
+            "Api_Key" : [],
+            "Authorization" : [],
+        }]
+    */
+    try{
+        const response = await getAllConsultants();
+        res.status(200).json(response)
+    }catch(e : any){
+        return e
+    }
+}
+

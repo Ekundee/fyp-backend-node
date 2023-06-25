@@ -12,11 +12,11 @@ export const getAllInternalAccount = async() =>{
         const response = {
             InternalAccount : internalAccounts
         }
-        return await Apiresponse( statusMessage.SUCCESSFUL, response)  
+        return await Apiresponse(200, statusMessage.SUCCESSFUL, "Successful",  response)  
         
         
     }catch(e : any){
-        return await Apiresponse(e.data.response ? e.data.response : e.message, null) 
+        return await Apiresponse(400, statusMessage.UNSUCCESSFUL, e.message, null) 
     }
 }
 
@@ -28,11 +28,11 @@ export const getInternalAccountById = async(Id : any) =>{
         const response = {
             InternalAccount : internalAccount
         }
-        return await Apiresponse( statusMessage.SUCCESSFUL, response)  
+        return await Apiresponse(200, statusMessage.SUCCESSFUL, "Successful",  response)  
         
         
     }catch(e : any){
-        return await Apiresponse(e.data.response ? e.data.response : e.message, null) 
+        return await Apiresponse(400, statusMessage.UNSUCCESSFUL, e.message, null) 
     }
 }
 
@@ -55,10 +55,10 @@ export const addInternalAccount = async(addInternalAccountDto : AddInternalAccou
         const response = {
             InternalAccount : savedInternalAccount
         }
-        return await Apiresponse( statusMessage.SUCCESSFUL, response)  
+        return await Apiresponse(200, statusMessage.SUCCESSFUL, "Successful",  response)  
         
         
     }catch(e : any){
-        return await Apiresponse(e.data.response ? e.data.response : e.message, null) 
+        return await Apiresponse(400, statusMessage.UNSUCCESSFUL, e.message, null) 
     }
 }

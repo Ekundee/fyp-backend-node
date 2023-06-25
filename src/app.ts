@@ -16,9 +16,17 @@ import accountRoute from "./route/account.route"
 import walletRoute from "./route/wallet.route" 
 import rateRoute from "./route/rate.route" 
 import messagingRoute from "./route/message.route"
-import { adminProtectedRouteChecker, apiKeyProtector, dbConnect } from "./service/utility.service";
+import sessionRoute from "./route/session.route"
+import mockRoute from "./route/mock.route"
+import { adminProtectedRouteChecker, apiKeyProtector, dbConnect, sessionChecker } from "./service/utility.service";
 import { symptomDiagnosis } from "./service/ai.service";
-import MessageModel from "./model/message.schema";
+import MessageModel from "./model/message.model";
+import { getUserFriend } from "./service/message.service"
+import mongoose from "mongoose"
+import { getUserFriendDto } from "./inteface/message.interface"
+import ChatroomModel from "./model/chatroom.model"
+import { getChatRoomByParticipants, getChatRoomParticipants } from "./service/authorization.service"
+import { ISessionCheckerDto } from "./inteface/utility.interface"
 
 const app : Application = express()
 app.use(cors({
@@ -45,6 +53,8 @@ app.use(accountRoute)
 app.use(walletRoute)
 app.use(rateRoute)
 app.use(messagingRoute)
+app.use(sessionRoute)
+app.use(mockRoute)
 
 
 
@@ -82,15 +92,50 @@ io.on("connection", (socket)=>{
           const decodedToken : any = jwt.verify(token, secret)
 
           // console.log(data.Participant)
-          console.log(decodedToken)
-          var userMessage = new MessageModel({
-               Participant : data.Participant,
+          // AuthToken: Requester.defaults.headers.common['Authorization'],
+          //           ChatRoom : id,
+          //           Text : values.message 
+          //      })
+
+          var participant : any = await ChatroomModel.findById(data.ChatRoom)
+
+          // const model : ISessionCheckerDto = {
+          //      ConsultantId : ,
+          //      UserId : decodedToken.Id
+          // }
+          
+          // const session = await sessionChecker(model)
+          // if(sessionChecker)
+          console.log(participant)
+          var newMessageObject = new MessageModel({
                Sender : decodedToken.Id,
-               Message : data.Message,
-               Timestamp : new Date().toLocaleString()
+               Receiver : participant[0] == decodedToken.Id ? participant[1] : participant[0],
+               Text : data.Text,
+               ChatRoom: data.ChatRoom,
+               Timestamp : new Date()
           })
-        
-          const savedUserMessage = await userMessage!.save()
+
+          var savedUserMessage = await newMessageObject.save()
           socket.emit("showChat", savedUserMessage)
      })
 })
+
+// getChatRoomParticipants({ChatRoom : "6493a1d07e167e1e575fdfca"})
+// var getMessage = await
+// var userMessage = new MessageModel({
+//      ChatRoom : "6493a1d07e167e1e575fdfca",
+//      Text : "Are you mad",
+//      Sender : "6493606ef3f25058c6ec7c14",
+//      Receiver : "649362f2f3ef872c2dd436c6",
+//      Timestamp : new Date()
+// })
+// userMessage.save()
+
+// var newCR = new ChatroomModel({
+//      Participant: ["649362f2f3ef872c2dd436c6", "6493606ef3f25058c6ec7c14"]
+// })
+// newCR.save()
+
+// getUserFriend({Id : '6493606ef3f25058c6ec7c14'}).then(resp=>{
+//      console.log(resp.Data)
+// })

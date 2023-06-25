@@ -20,3 +20,9 @@ export interface TokenPayload {
     Role : userRole,
     IsAdmin : boolean
 }
+
+
+export interface ISessionCheckerDto {
+    UserId : mongoose.Types.ObjectId,
+    ConsultantId : mongoose.Types.ObjectId,
+}

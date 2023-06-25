@@ -1,8 +1,9 @@
 import { Request, Response } from "express";
 import { statusMessage } from "../enum/utility.enum";
-import { signUpDto, signInDto, changePasswordDto, getRefreshTokenDto, changeEmailDto, changePhoneNumberDto, validateEmailDto } from "../inteface/authorization.interface";
-import { activateUser, changeEmail, changePassword, changePhoneNumber, deActivateUser, getRefreshToken, signIn, signUp, validateEmail } from "../service/authorization.service";
+import { signUpDto, signInDto, changePasswordDto, getRefreshTokenDto, changeEmailDto, changePhoneNumberDto, validateEmailDto, getChatRoomParticipantsDto, getChatRoomByParticipantsDto } from "../inteface/authorization.interface";
+import { activateUser, changeEmail, changePassword, changePhoneNumber, deActivateUser, getChatRoomByParticipants, getChatRoomParticipants, getRefreshToken, signIn, signUp, validateEmail } from "../service/authorization.service";
 import { Apiresponse, userOtpGenerator } from "../service/utility.service";
+import ChatroomModel from "../model/chatroom.model";
 
 
 export const getRefreshTokenController = async(req : Request, res : Response)=>{
@@ -68,7 +69,6 @@ export const signUpController = async (req : Request, res : Response)=> {
           const signup = await signUp(userData);
           res.status(200).json(signup)
      }catch(e : any){
-           console.log(e.message)
            return e.message
      }
  }
@@ -220,7 +220,7 @@ export const generateOtpController = async (req : Request, res : Response)=> {
     try{
         const { Id } = res.locals.decodedToken
         const generateOtp = await userOtpGenerator(Id);
-        const response = await Apiresponse(statusMessage.SUCCESSFUL, generateOtp)
+        const response = await Apiresponse(200, statusMessage.SUCCESSFUL, "User Email successfully changed", generateOtp)
         res.status(200).json(response)
     }catch(e : any){
         return e.message
@@ -243,7 +243,7 @@ export const activateUserController = async (req : Request, res : Response)=> {
     try{
         const { Id } = res.locals.decodedToken
         const activate_user = await activateUser(Id);
-        const response = await Apiresponse(statusMessage.SUCCESSFUL, activate_user)
+        const response = await Apiresponse(200, statusMessage.SUCCESSFUL, "User Activated",  activate_user)
         res.status(200).json(response)
     }catch(e : any){
         return e.message
@@ -254,7 +254,7 @@ export const activateUserController = async (req : Request, res : Response)=> {
 export const deActivateUserController = async (req : Request, res : Response)=> {
      /*
          #swagger.tags=["Authorization"]
-         #swagger.summary="Activate user"
+         #swagger.summary="de-activate user"
          #swagger.security=[{
              "Api_Key" : [],
              "Authorization" : [],
@@ -267,7 +267,7 @@ export const deActivateUserController = async (req : Request, res : Response)=> 
      try{
          const { Id } = res.locals.decodedToken
          const activate_user = await deActivateUser(Id);
-         const response = await Apiresponse(statusMessage.SUCCESSFUL, activate_user)
+         const response = await Apiresponse(200, statusMessage.SUCCESSFUL, "User successfully deactivated", activate_user)
          res.status(200).json(response)
      }catch(e : any){
          return e.message
@@ -299,7 +299,6 @@ export const deActivateUserController = async (req : Request, res : Response)=> 
                Id : Id,
                Otp : Otp
           }
-          console.log(userData)
           const response = await validateEmail(userData);
           res.status(200).json(response)
      }catch(e : any){
@@ -307,3 +306,63 @@ export const deActivateUserController = async (req : Request, res : Response)=> 
      }
  }
  
+
+ export const getChatRoomParticipantsController = async (req : Request, res : Response)=> {
+    /*
+         #swagger.tags=["Authorization"]
+         #swagger.summary="Get chatroom participant"
+         #swagger.security=[{
+              "Api_Key" : [],
+              "Authorization" : [],
+         }]
+
+         #swagger.parameters['ChatRoom'] = {
+              in : 'query',
+         }
+    */
+    try{
+        const { Id } = res.locals.decodedToken
+        const { ChatRoom } : any = req.query
+
+        const userData : getChatRoomParticipantsDto = { 
+            ChatRoom: ChatRoom
+        }
+        const response = await getChatRoomParticipants(userData);
+        res.status(200).json(response)
+    }catch(e : any){
+        return e.message
+    }
+}
+
+
+
+export const getChatRoomByParticipantsController = async (req : Request, res : Response)=> {
+    /*
+         #swagger.tags=["Authorization"]
+         #swagger.summary="Get chatroom participant"
+         #swagger.security=[{
+              "Api_Key" : [],
+              "Authorization" : [],
+         }]
+
+         #swagger.parameters['body'] = {
+              in : 'body',
+              schema : {
+                Participant : "fiojokdfeij"
+              }
+         }
+    */
+    try{
+        const { Id } = res.locals.decodedToken
+        const { Participants } : any = req.body
+
+        const userData : getChatRoomByParticipantsDto = { 
+            Participants: [Id, Participants]
+        }
+
+        const response = await getChatRoomByParticipants(userData);
+        res.status(200).json(response)
+    }catch(e : any){
+        return e.message
+    }
+}

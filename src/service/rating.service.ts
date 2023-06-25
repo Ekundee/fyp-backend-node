@@ -19,10 +19,10 @@ export const rateUser = async(rateUserDto : rateUserDto) =>{
 
         const savedRating = await newRating.save()
       
-        return await Apiresponse(statusMessage.SUCCESSFUL, savedRating)
+        return await Apiresponse(200, statusMessage.SUCCESSFUL, "User rated", savedRating)
         
     }catch(e : any){
-        return await Apiresponse(e.message, null)
+        return await  Apiresponse(400, statusMessage.UNSUCCESSFUL, e.message, null)
     }
 }
 
@@ -35,9 +35,9 @@ export const getTodayRating = async() =>{
             Rating : ratings
         }
 
-        return await Apiresponse(statusMessage.SUCCESSFUL, response)
+        return await Apiresponse(200,statusMessage.SUCCESSFUL, "Successful", response)
     }catch(e : any){
-        return await Apiresponse(e.message, null)
+        return await  Apiresponse(400, statusMessage.UNSUCCESSFUL, e.message, null)
     }
 }
 
@@ -49,9 +49,9 @@ export const getUserRating = async(Id : any) =>{
             Rating : ratings
         }
 
-        return await Apiresponse(statusMessage.SUCCESSFUL, response)
+        return await Apiresponse(200,statusMessage.SUCCESSFUL, "Successful", response)
     }catch(e : any){
-        return await Apiresponse(e.message, null)
+        return await  Apiresponse(400, statusMessage.UNSUCCESSFUL, e.message, null)
     }
 }
 
@@ -64,9 +64,9 @@ export const getUserTodayRating = async(Id : any) =>{
             Rating : ratings
         }
 
-        return await Apiresponse(statusMessage.SUCCESSFUL, response)
+        return await Apiresponse(200,statusMessage.SUCCESSFUL, "Successful", response)
     }catch(e : any){
-        return await Apiresponse(e.message, null)
+        return await  Apiresponse(400, statusMessage.UNSUCCESSFUL, e.message, null)
     }
 }
 
@@ -88,9 +88,9 @@ export const getAllUserStarRating = async() =>{
             Rating : starRatingDict
         }
 
-        return await Apiresponse(statusMessage.SUCCESSFUL, response)
+        return await Apiresponse(200,statusMessage.SUCCESSFUL, "Successful", response)
     }catch(e : any){
-        return await Apiresponse(e.message, null)
+        return await  Apiresponse(400, statusMessage.UNSUCCESSFUL, e.message, null)
     }
 }
 
@@ -110,9 +110,9 @@ export const getUserStarRating = async(Id : any) =>{
             Rating : cummStarRating
         }
 
-        return await Apiresponse(statusMessage.SUCCESSFUL, response)
+        return await Apiresponse(200,statusMessage.SUCCESSFUL, "Successful", response)
     }catch(e : any){
-        return await Apiresponse(e.message, null)
+        return await Apiresponse(400, statusMessage.UNSUCCESSFUL, e.message, null)
     }
 }
 

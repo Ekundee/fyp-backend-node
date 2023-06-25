@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { activateUserController, changeEmailController, changePasswordController, changePhoneNumberController, deActivateUserController, generateOtpController, getRefreshTokenController, signInController, signUpController, validateEmailController } from "../controller/authorization.controller";
+import { activateUserController, changeEmailController, changePasswordController, changePhoneNumberController, deActivateUserController, generateOtpController, getChatRoomByParticipantsController, getChatRoomParticipantsController, getRefreshTokenController, signInController, signUpController, validateEmailController } from "../controller/authorization.controller";
 import { changePhoneNumber } from "../service/authorization.service";
 import { adminProtectedRouteValidator, protectedRoute } from "../service/utility.service";
 
@@ -26,6 +26,11 @@ route.post("/validate/phone", protectedRoute, changePasswordController)
 route.post("/activate/user", adminProtectedRouteValidator, protectedRoute, activateUserController)
 
 route.post("/deactivate/user", adminProtectedRouteValidator, protectedRoute, deActivateUserController)
+
+route.get("/getChatRoomParticipants", protectedRoute, getChatRoomParticipantsController)
+
+route.post("/getChatRoomByParticipants", protectedRoute, getChatRoomByParticipantsController)
+
 
 
 

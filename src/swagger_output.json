@@ -593,11 +593,41 @@
         "tags": [
           "Authorization"
         ],
-        "summary": "Activate user",
+        "summary": "de-activate user",
         "description": "",
         "parameters": [
           {
             "name": "id",
+            "in": "query",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        },
+        "security": [
+          {
+            "Api_Key": [],
+            "Authorization": []
+          }
+        ]
+      }
+    },
+    "/getChatRoomParticipants": {
+      "get": {
+        "tags": [
+          "Authorization"
+        ],
+        "summary": "Get chatroom participant",
+        "description": "",
+        "parameters": [
+          {
+            "name": "ChatRoom",
             "in": "query",
             "type": "string"
           }
@@ -669,7 +699,7 @@
         "description": "",
         "parameters": [
           {
-            "name": "Participant",
+            "name": "ChatRoom",
             "in": "query",
             "type": "string"
           }
@@ -722,6 +752,64 @@
         "summary": "Get All user's friends (Consultant)",
         "description": "",
         "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        },
+        "security": [
+          {
+            "Api_Key": [],
+            "Authorization": []
+          }
+        ]
+      }
+    },
+    "/mockDeposit": {
+      "post": {
+        "tags": [
+          "Mock"
+        ],
+        "summary": "A mock deposit server",
+        "description": "",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "Amount": {
+                  "type": "number",
+                  "example": 300
+                },
+                "CardNumber": {
+                  "type": "string",
+                  "example": "1234-1231-1231-1333"
+                },
+                "ExpiryMonth": {
+                  "type": "string",
+                  "example": "04"
+                },
+                "ExpiryYear": {
+                  "type": "string",
+                  "example": "89"
+                },
+                "Password": {
+                  "type": "string",
+                  "example": "Password"
+                },
+                "Cvv": {
+                  "type": "string",
+                  "example": "456"
+                }
+              }
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "OK"
@@ -828,6 +916,27 @@
           },
           "401": {
             "description": "Unauthorized"
+          }
+        },
+        "security": [
+          {
+            "Api_Key": [],
+            "Authorization": []
+          }
+        ]
+      }
+    },
+    "/getAllConsultants": {
+      "get": {
+        "tags": [
+          "Profile"
+        ],
+        "summary": "Update user profile",
+        "description": "",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK"
           }
         },
         "security": [
@@ -997,6 +1106,106 @@
         "responses": {
           "200": {
             "description": "OK"
+          }
+        },
+        "security": [
+          {
+            "Api_Key": [],
+            "Authorization": []
+          }
+        ]
+      }
+    },
+    "/createSession": {
+      "post": {
+        "tags": [
+          "Session"
+        ],
+        "summary": "Create session",
+        "description": "",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "ConsultantId": {
+                  "type": "string",
+                  "example": "1232_3242311_23232132_232323"
+                },
+                "Description": {
+                  "type": "string",
+                  "example": "This is a successful transaction"
+                },
+                "Amount": {
+                  "type": "number",
+                  "example": 50000
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        },
+        "security": [
+          {
+            "Api_Key": [],
+            "Authorization": []
+          }
+        ]
+      }
+    },
+    "/getUserSession": {
+      "get": {
+        "tags": [
+          "Session"
+        ],
+        "summary": "Get User session",
+        "description": "",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        },
+        "security": [
+          {
+            "Api_Key": [],
+            "Authorization": []
+          }
+        ]
+      }
+    },
+    "/getConsultantSession": {
+      "get": {
+        "tags": [
+          "Session"
+        ],
+        "summary": "Get consultant session",
+        "description": "",
+        "parameters": [
+          {
+            "name": "consultantId",
+            "in": "query",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
           }
         },
         "security": [

@@ -1,5 +1,5 @@
 require("dotenv").config({})
-import { IApiResponse, IMessageConfig, TokenPayload } from "../inteface/utility.interface";
+import { IApiResponse, IMessageConfig, ISessionCheckerDto, TokenPayload } from "../inteface/utility.interface";
 import bcrypt from "bcrypt"
 import nodemailer, { SendMailOptions, Transporter } from "nodemailer"
 import SMTPTransport from "nodemailer/lib/smtp-transport";
@@ -11,6 +11,7 @@ import UserModel from "../model/user.model";
 import OtpModel from "../model/otp.model";
 import axios from "axios";
 import winston from "winston"
+import SessionModel from "../model/session.model";
 
 var response : IApiResponse
 
@@ -154,6 +155,9 @@ export const protectedRoute = async(req : Request, res : Response, next : NextFu
           const secret : string = process.env.SECRET ? process.env.SECRET : "secret"
           const decodedToken = jwt.verify(token, secret)
           res.locals.decodedToken = decodedToken
+          const { Id } = res.locals.decodedToken
+          const userVerificationResponse = await UserVerificationChecker(Id)
+          if(userVerificationResponse != true) return res.json(userVerificationResponse)
           return next()
      }catch(e : any){
           return res.status(401).json(await Apiresponse(200,statusMessage.UNSUCCESSFUL, "User is not authorized to use this route", null))
@@ -168,7 +172,7 @@ export const generateReference = async()=>{
           var reference = "T"+referenceNo.slice(0,15)
           return reference
      }catch(e : any){
-          return e.data.response ? e.data.response : e.message
+          return e.message
      }
 }
 
@@ -225,11 +229,22 @@ export const strictSimilarityChecker = async(x : any, y : any) : Promise<boolean
 export const apiKeyProtector = async(req : Request, res : Response, next : NextFunction) =>{
     try{
         const { apikey } : any = req.headers;
-        if (apikey != 123456789) res.status(401).json(await Apiresponse(statusMessage.UNAUTHORIZED, null))
+        if (apikey != 123456789) res.status(401).json(await Apiresponse(401, statusMessage.UNAUTHORIZED, "User is not authorized to use this route", null))
         return next()
     }catch(e : any){
-        return res.status(401).json(await Apiresponse(statusMessage.UNAUTHORIZED, null))
+        return res.status(401).json(await Apiresponse(401, statusMessage.UNAUTHORIZED, 'User is not suthorized to use thos route', null))
     }
+}
+
+
+// User Verification Checker
+export const UserVerificationChecker = async(Id : mongoose.Types.ObjectId) =>{
+    console.log(Id)
+    var user = await UserModel.findOne({ _id : Id, IsEmailVerified : true } )
+    if (user == null){
+        return await Apiresponse(401, statusMessage.UNAUTHORIZED, 'Please verify your email', null)
+    }
+    return true
 }
 
 
@@ -265,7 +280,7 @@ export const adminProtectedRouteValidator = async(req : Request, res : Response,
     try {
         const {decodedToken} = res.locals
         if(!decodedToken) return res.status(401).json(await Apiresponse(401,statusMessage.UNAUTHORIZED, "Please login as an admin", null))
-        if(!decodedToken.IsAdmin) return res.status(401).json(await Apiresponse(statusMessage.UNAUTHORIZED, null))
+        if(!decodedToken.IsAdmin) return res.status(401).json(await Apiresponse(401, statusMessage.UNAUTHORIZED, "Please login as an admin", null))
         return next()
     }catch(e : any){
         return next()
@@ -298,3 +313,18 @@ export function onlyUnique(value : any, index : any, array : any) {
      return array.indexOf(value) === index;
 }
   
+export const sessionChecker = async(sessionCheckerDto : ISessionCheckerDto) =>{
+    try {
+        var time = new Date()
+        var session = await SessionModel.findOne({
+            UserId : sessionCheckerDto.UserId,
+            ConsultantId : sessionCheckerDto.ConsultantId,
+            TimeOfSessionStart : { $gte : time },
+            TimeOfSessionEnd : { $lt : time }
+        })
+        if(session == null) return false
+        else return true
+    }catch(e : any){
+        return e.data.response ? e.data.response : e.message
+    }
+}

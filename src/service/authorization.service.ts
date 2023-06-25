@@ -1,14 +1,15 @@
 import { Console } from "winston/lib/winston/transports";
 import { statusMessage, userRole, userStatus } from "../enum/utility.enum";
-import { changeEmailDto, changePasswordDto, changePhoneNumberDto, getRefreshTokenDto, signInDto, signUpDto, validateEmailDto } from "../inteface/authorization.interface";
+import { changeEmailDto, changePasswordDto, changePhoneNumberDto, getChatRoomByParticipantsDto, getChatRoomParticipantsDto, getRefreshTokenDto, signInDto, signUpDto, validateEmailDto } from "../inteface/authorization.interface";
 import { registrationMail } from "../mails";
 import OtpModel from "../model/otp.model";
 import UserModel, { IUserSchema } from "../model/user.model";
-import { Apiresponse, generateToken, logger, mailer, OtpGenerator, passwordHasher, systemIdGenerator, userOtpGenerator } from "./utility.service";
+import { Apiresponse, generateToken, logger, mailer, OtpGenerator, passwordHasher, systemIdGenerator, userOtpGenerator, UserVerificationChecker } from "./utility.service";
 import bcrypt from "bcrypt"
 import { response } from "express";
 import mongoose from "mongoose";
-
+import ChatroomModel from "../model/chatroom.model";
+import fs from "fs"
 export const getRefreshToken = async(userdata : getRefreshTokenDto)=>{
     try{
 
@@ -16,9 +17,9 @@ export const getRefreshToken = async(userdata : getRefreshTokenDto)=>{
         const response = {
             AuthToken : token
         }
-        return await Apiresponse(200,statusMessage.SUCCESSFUL,response)
+        return await Apiresponse(200,statusMessage.SUCCESSFUL, "Refresh token generated", response)
     }catch(e : any){
-        return await Apiresponse(200,e.message, null) 
+        return await Apiresponse(200, statusMessage.UNSUCCESSFUL, e.message, null) 
     }
 }
 
@@ -29,8 +30,8 @@ export const signUp = async (userData : signUpDto ) => {
 
           if (userData.Email == null || userData.Password == null) return await Apiresponse(400, statusMessage.UNSUCCESSFUL, "User does not exist", null);
 
-          const user = await UserModel.findOne({Email : userData.Email})
-          if (user != null) return await Apiresponse(400, statusMessage.UNSUCCESSFUL, "User already exists", null) 
+            const user = await UserModel.findOne({Email : userData.Email})
+            if (user != null) return await Apiresponse(400, statusMessage.UNSUCCESSFUL, "User already exists", null) 
 
           // hash password
           const hashedPassword : string = await passwordHasher(userData!.Password) 
@@ -71,7 +72,7 @@ export const signUp = async (userData : signUpDto ) => {
                     Role : userData.Role,
                     ConsultantInformation : {
                          LicenseNumber : userData.LicenseNumber,
-                         Specialization : "userData.Specialization"
+                         Specialization : userData.Specialization
                     },
                     Balance : 0,
                     Otp : null,
@@ -86,7 +87,7 @@ export const signUp = async (userData : signUpDto ) => {
 
           // generate otp
           const otp = await userOtpGenerator(savedUser._id);
-          // await mailer(registrationMail({otp : otp.T}),[userData.Email],null)
+          await mailer(registrationMail({otp : otp.Token}),[userData.Email],null)
      
           const data = {
                User : savedUser,
@@ -106,6 +107,9 @@ export const signIn = async (userData : signInDto) => {
 
           const user = await UserModel.findOne({Email : userData.Email, Role : userData.Role})
           if (user == null) return await  Apiresponse(400, statusMessage.UNSUCCESSFUL, "User does not exist", null)  
+
+          const userVerificationResponse = await UserVerificationChecker(user!._id)
+          if(userVerificationResponse != true) return userVerificationResponse
 
           const isPasswordCorrect = await bcrypt.compare(userData.Password, user!.Password)
 
@@ -149,10 +153,10 @@ export const changeEmail = async (userData : changeEmailDto ) => {
     try{
 
         const user = await UserModel.findById(userData.Id)
-        if (user == null) return await Apiresponse(200,statusMessage.INEXISTENT,null)
+        if (user == null) return await Apiresponse(200,statusMessage.UNSUCCESSFUL, "User does not exist", null)
 
         const ifEmailExists = await UserModel.findOne({ Email : userData.NewEmail})
-        if(ifEmailExists != null) return await Apiresponse(200,statusMessage.EXISTS,null)
+        if(ifEmailExists != null) return await Apiresponse(200,statusMessage.UNSUCCESSFUL, "Email does not exist",null)
          
         user.Email = userData.NewEmail
         user.IsEmailVerified = false
@@ -162,10 +166,10 @@ export const changeEmail = async (userData : changeEmailDto ) => {
         const response = {
             User : savedUser,
         }
-        return  await Apiresponse(200,statusMessage.SUCCESSFUL, response)
+        return  await Apiresponse(200, statusMessage.SUCCESSFUL, "User email successfully changed",response)
         
     }catch(e : any){
-        return await Apiresponse(200,e.message, null) 
+        return await Apiresponse(200, statusMessage.UNSUCCESSFUL,e.message, null) 
     }
 }
 
@@ -175,7 +179,7 @@ export const changePhoneNumber = async (userData : changePhoneNumberDto ) => {
     try{
 
         const user = await UserModel.findById(userData.Id)
-        if (user == null) return await Apiresponse(200,statusMessage.INEXISTENT,null)
+        if (user == null) return await Apiresponse(200,statusMessage.UNSUCCESSFUL, "User does not exist",null)
 
         user.Phonenumber = userData.NewPhoneNo
         user.IsPhoneNoVerified = false
@@ -185,10 +189,10 @@ export const changePhoneNumber = async (userData : changePhoneNumberDto ) => {
         const response = {
             User : savedUser,
         }
-        return await Apiresponse(200,statusMessage.SUCCESSFUL, response)
+        return await Apiresponse(200,statusMessage.SUCCESSFUL, "Phone number changed", response)
 
     }catch(e : any){
-        return await Apiresponse(200,e.message, null) 
+        return await Apiresponse(200, statusMessage.UNSUCCESSFUL, e.message, null) 
     }
 }
 
@@ -198,16 +202,16 @@ export const activateUser = async (Id : any ) => {
     try{
 
         const user = await UserModel.findById(Id)
-        if (user == null) return await Apiresponse(200,statusMessage.INEXISTENT,null)
+        if (user == null) return await Apiresponse(200,statusMessage.UNSUCCESSFUL, "User does not exist", null)
 
         user.Status = userStatus.ACTIVE
 
         await user.save()
        
-        return await Apiresponse(200,statusMessage.SUCCESSFUL, null)
+        return await Apiresponse(200,statusMessage.SUCCESSFUL, "User activated", null)
 
     }catch(e : any){
-        return await Apiresponse(200,e.message, null) 
+        return await Apiresponse(200, statusMessage.UNSUCCESSFUL, e.message, null) 
     }
 }
 
@@ -216,24 +220,22 @@ export const deActivateUser = async (Id : any ) => {
     try{
 
         const user = await UserModel.findById(Id)
-        if (user == null) return await Apiresponse(200,statusMessage.INEXISTENT,null)
+        if (user == null) return await Apiresponse(200,statusMessage.UNSUCCESSFUL, "User does not exist",null)
 
         user.Status = userStatus.INACTIVE
 
         await user.save()
      
-        return await Apiresponse(200,statusMessage.SUCCESSFUL, response)
+        return await Apiresponse(200,statusMessage.SUCCESSFUL, "User deactivated",response)
 
     }catch(e : any){
-        return await Apiresponse(200,e.message, null) 
+        return await Apiresponse(200, statusMessage.UNSUCCESSFUL, e.message, null) 
     }
 }
 
 export const validateEmail = async (userData : validateEmailDto ) => {
      try{
           const user = await UserModel.findById(userData.Id)
-
-          console.log(userData)
           if (user == null) return await Apiresponse(400,statusMessage.UNSUCCESSFUL, "User does not exist",null)
 
           const otp = await OtpModel.findById(user!.Otp)
@@ -252,4 +254,48 @@ export const validateEmail = async (userData : validateEmailDto ) => {
      }catch(e : any){
           return await Apiresponse(400, statusMessage.UNSUCCESSFUL ,e.message, null) 
      }
+}
+
+
+export const getChatRoomParticipants = async (userData : getChatRoomParticipantsDto ) => {
+    try{
+       
+        const participants = await ChatroomModel.findById(userData.ChatRoom).populate("Participant")
+        const response = {
+            Participant : participants,
+        }
+        return await Apiresponse(200,statusMessage.SUCCESSFUL, "Chat room participants", response)
+
+    }catch(e : any){
+         return await Apiresponse(400, statusMessage.UNSUCCESSFUL ,e.message, null) 
+    }
+}
+
+export const getChatRoomByParticipants = async (userData : getChatRoomByParticipantsDto) => {
+    try{
+       
+        const { Participants } = userData
+        
+        const ChatRoom = await ChatroomModel.findOne({ 
+            Participant : {
+                $all:[
+                    Participants[0],
+                    Participants[1],
+                ]
+            }
+        })
+        
+        if (ChatRoom == null){
+            var newChatRoom = new ChatroomModel({
+                Participant: [Participants[0], Participants[1]]
+            })
+
+            var savedChatRoom = await newChatRoom.save()
+            return await Apiresponse(200,statusMessage.SUCCESSFUL, "Participants Chatroom", savedChatRoom)
+        }
+        return await Apiresponse(200,statusMessage.SUCCESSFUL, "Participants Chatroom", ChatRoom)
+
+    }catch(e : any){
+         return await Apiresponse(400, statusMessage.UNSUCCESSFUL ,e.message, null) 
+    }
 }

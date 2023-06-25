@@ -87,7 +87,7 @@ const UserSchema = new Schema<IUserSchema>({
      Status : {
           type : String,
           enum : userStatus
-     }
+     },
 },{ timestamps : true})
 
 const UserModel = model("user", UserSchema)

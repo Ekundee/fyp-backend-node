@@ -1,24 +1,28 @@
 import mongoose, { Schema } from "mongoose";
 
 export interface IMessageSchema extends mongoose.Document{
-    Participant : mongoose.Types.ObjectId,
+    ChatRoom : mongoose.Types.ObjectId,
+    Text : string,
     Sender : mongoose.Types.ObjectId,
-    Message : string,
-    Timestamp : string
+    Receiver : mongoose.Types.ObjectId,
+    Timestamp : Date
 }
 
 const MessageSchema = new Schema<IMessageSchema>({
-     Participant : {
+     ChatRoom : {
           type : Schema.Types.ObjectId
+     },
+     Text : {
+          type: String,
      },
      Sender : {
           type : Schema.Types.ObjectId
      },
-     Message : {
-          type : String
+     Receiver : {
+          type : Schema.Types.ObjectId
      },
      Timestamp : {
-          type : String
+          type : Date
      }
 })
 

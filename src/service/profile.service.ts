@@ -1,14 +1,14 @@
 import mongoose from "mongoose";
-import { statusMessage } from "../enum/utility.enum";
+import { statusMessage, userRole } from "../enum/utility.enum";
 import { getProfileResponse, updateProfileDto } from "../inteface/profile.interface";
 import UserModel from "../model/user.model";
 import { Apiresponse } from "./utility.service";
 
-// Get profile by ID
+// Get profile
 export const getProfile = async(id : any) =>{
     try{
         const user = await UserModel.findById(id)
-        if (user == null) return  Apiresponse(statusMessage.INEXISTENT, null) 
+        if (user == null) return  Apiresponse(400, statusMessage.UNSUCCESSFUL, "User does not exist", null) 
 
         const profile : getProfileResponse = {
             Firstname : user.Firstname,
@@ -22,17 +22,21 @@ export const getProfile = async(id : any) =>{
             IsPhoneNoVerified : user.IsPhoneNoVerified,
         }
 
-        return await Apiresponse(statusMessage.SUCCESSFUL, profile)
+        const response = {
+            User : profile
+        }
+
+        return await Apiresponse(200, statusMessage.SUCCESSFUL, "User profile retrieved", response)
         
     }catch(e : any){
-        return await Apiresponse(e.message, null) 
+        return await Apiresponse(400, statusMessage.UNSUCCESSFUL, e.message, null) 
     }
 }
 
 export const updateProfile = async(userData : updateProfileDto) =>{
     try{
         const user = await UserModel.findById(userData.Id)
-        if (user == null) return await Apiresponse(statusMessage.INEXISTENT, null) 
+        if (user == null) return await Apiresponse(400,statusMessage.UNSUCCESSFUL, "User does not exist", null) 
 
         user.Firstname = userData.Firstname != null ? userData.Firstname : user.Firstname
         user.Lastname = userData.Lastname != null ? userData.Lastname : user.Lastname
@@ -43,10 +47,24 @@ export const updateProfile = async(userData : updateProfileDto) =>{
         const response = {
             User : user
         }
-        return response
+        return await Apiresponse(200, statusMessage.SUCCESSFUL, "User profile retrieved", response)
     }catch(e : any){
-        return await Apiresponse(e.message, null) 
+        return await Apiresponse(400, statusMessage.UNSUCCESSFUL, e.message, null) 
     }
 }
 
 
+
+// Get profile
+export const getAllConsultants = async() =>{
+    try{
+        const consultants = await UserModel.find({ Role : userRole.CONSULTANT })
+
+        const response = {
+            Consultant : consultants
+        }
+        return await Apiresponse(200, statusMessage.SUCCESSFUL, "All consultants retrieved", response)
+    }catch(e : any){
+        return await Apiresponse(400, statusMessage.UNSUCCESSFUL, e.message, null) 
+    }
+}

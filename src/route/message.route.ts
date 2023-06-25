@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { getAllUserMessageController, getMessageController, getMessageWithParticipantController, getUserFriendController, sendMessageController } from "../controller/message.controller";
+import { getAllUserMessageController, getMessageWithParticipantController, getUserFriendController, sendMessageController } from "../controller/message.controller";
 import { protectedRoute } from "../service/utility.service";
 
 var route : Router = Router()

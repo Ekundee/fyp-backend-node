@@ -44,3 +44,11 @@ export interface validateEmailDto {
     Id : mongoose.Types.ObjectId,
     Otp : number
 }
+
+export interface getChatRoomParticipantsDto {
+    ChatRoom : mongoose.Types.ObjectId
+}
+
+export interface getChatRoomByParticipantsDto {
+    Participants : mongoose.Types.ObjectId[]
+}
