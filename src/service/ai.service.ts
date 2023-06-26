@@ -168,6 +168,3 @@ export const symptomDiagnosis = async (DTOData : ISymptomDiagnoseDTO ) => {
          return await Apiresponse(200, statusMessage.UNSUCCESSFUL, e.message, null) 
      }
  }
-
-
- 
