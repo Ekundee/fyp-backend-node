@@ -20,7 +20,9 @@ export async function visualSkinDiagnosisController(req : Request, res : Respons
                } 
                
           */
+         const { Id } = res.locals.decodedToken
           const visualSkinDiagnoseDTO : IVisualSkinDiagnoseDTO = {
+               UserId : Id,
                SkinPic : req.file
           }
           const response = await visualSkinDiagnosis(visualSkinDiagnoseDTO)
