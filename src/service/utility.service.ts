@@ -156,8 +156,9 @@ export const protectedRoute = async(req : Request, res : Response, next : NextFu
           const decodedToken = jwt.verify(token, secret)
           res.locals.decodedToken = decodedToken
           const { Id } = res.locals.decodedToken
+          const { Otp } = req.body
           const userVerificationResponse = await UserVerificationChecker(Id)
-          if(userVerificationResponse != true) return res.json(userVerificationResponse)
+          if(userVerificationResponse != true &&  Otp != true) return res.json(userVerificationResponse)
           return next()
      }catch(e : any){
           return res.status(401).json(await Apiresponse(200,statusMessage.UNSUCCESSFUL, "User is not authorized to use this route", null))
