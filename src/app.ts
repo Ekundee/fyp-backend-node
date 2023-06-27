@@ -101,14 +101,13 @@ io.on("connection", (socket)=>{
 
           var participant : any = await ChatroomModel.findById(data.ChatRoom)
 
-          // const model : ISessionCheckerDto = {
-          //      ConsultantId : ,
-          //      UserId : decodedToken.Id
-          // }
+          const model : any = {
+               ConsultantId : participant?.Participant[0] == decodedToken.Id  ? participant?.Participant[1] : participant?.Participant[0],
+               UserId : decodedToken.Id
+          }
           
           // const session = await sessionChecker(model)
-          // if(sessionChecker)
-          console.log(participant)
+          if((await sessionChecker(model)) == false) return 0
           var newMessageObject = new MessageModel({
                Sender : decodedToken.Id,
                Receiver : participant[0] == decodedToken.Id ? participant[1] : participant[0],
