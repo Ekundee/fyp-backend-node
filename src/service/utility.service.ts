@@ -167,13 +167,25 @@ export const protectedRoute = async(req : Request, res : Response, next : NextFu
 
 // Generate reference
 export const generateReference = async()=>{
-     try {
-          var referenceNo = ((Date.now() + Math.random()) * 1000).toString()
-          var reference = "T"+referenceNo.slice(0,15)
-          return reference
-     }catch(e : any){
-          return e.message
-     }
+    try {
+         var referenceNo = ((Date.now() + Math.random()) * 1000).toString()
+         var reference = "T"+referenceNo.slice(0,15)
+         return reference
+    }catch(e : any){
+         return e.message
+    }
+}
+
+
+// Generate diagnosis code
+export const generateDiagnosisCode = async()=>{
+    try {
+         var diagnosisCode = ((Date.now() + Math.random()) * 1000).toString()
+         var shorteneddiagnosisCode = diagnosisCode.slice(0,9)
+         return shorteneddiagnosisCode
+    }catch(e : any){
+         return e.message
+    }
 }
 
 

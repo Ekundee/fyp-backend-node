@@ -648,6 +648,113 @@
         ]
       }
     },
+    "/getChatRoomByParticipants": {
+      "post": {
+        "tags": [
+          "Authorization"
+        ],
+        "summary": "Get chatroom participant",
+        "description": "",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "Participant": {
+                  "type": "string",
+                  "example": "fiojokdfeij"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        },
+        "security": [
+          {
+            "Api_Key": [],
+            "Authorization": []
+          }
+        ]
+      }
+    },
+    "/saveDiagnosis": {
+      "post": {
+        "tags": [
+          "Diagnosis"
+        ],
+        "summary": "Save diagnosis",
+        "description": "",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "condition": {
+                  "type": "array",
+                  "example": [
+                    "hi",
+                    "hi",
+                    "hi"
+                  ],
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        },
+        "security": [
+          {
+            "Api_Key": [],
+            "Authorization": []
+          }
+        ]
+      }
+    },
+    "/getUserDiagnosis": {
+      "get": {
+        "tags": [
+          "Diagnosis"
+        ],
+        "summary": "Get user Diagnosis",
+        "description": "",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        },
+        "security": [
+          {
+            "Api_Key": [],
+            "Authorization": []
+          }
+        ]
+      }
+    },
     "/message": {
       "post": {
         "tags": [
@@ -1134,13 +1241,9 @@
                   "type": "string",
                   "example": "1232_3242311_23232132_232323"
                 },
-                "Description": {
-                  "type": "string",
-                  "example": "This is a successful transaction"
-                },
-                "Amount": {
+                "hours": {
                   "type": "number",
-                  "example": 50000
+                  "example": 2
                 }
               }
             }

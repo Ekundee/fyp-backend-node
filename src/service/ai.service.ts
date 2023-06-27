@@ -1,7 +1,8 @@
 import { ISymptomDiagnoseDTO, IVisualSkinDiagnoseDTO } from "../inteface/ai.interface";
 import * as tf from "@tensorflow/tfjs-node"
-import { Apiresponse } from "./utility.service";
+import { Apiresponse, generateDiagnosisCode } from "./utility.service";
 import { statusMessage } from "../enum/utility.enum";
+import DiagnosisModel from "../model/diagnosis.model";
 
 
 function findMinNMax(a : any){
@@ -50,6 +51,7 @@ function MinMaxScalarInverseJs (a : any ,xmin : number ,xmax : number) {
 export const visualSkinDiagnosis = async (DTOData : IVisualSkinDiagnoseDTO ) => {
      try{
           const skinPic = DTOData.SkinPic
+          // const b = Buffer.from(skinPic, "base64");
           var skinPicTensor = tf.node.decodeImage(skinPic!.buffer,3)
           var resizedSkinPicTensor = tf.image.resizeBilinear(skinPicTensor, [64,64], true) // this is a 3d tensor but we need a 4d tensor so we switch normal js array before 4d tensor
           const resizedSkinPicTensorToArray = resizedSkinPicTensor.dataSync();
@@ -88,9 +90,25 @@ export const visualSkinDiagnosis = async (DTOData : IVisualSkinDiagnoseDTO ) => 
           
           const confirmedDisease = skinDiseaseLabels[arrMaxIndex]
  
+          // Find the indices of the three highest elements in the original array
+          const originalIndices = predictProbabilityTensorToJSArray
+          .map((_, index) => index)
+          .sort((a, b) => predictProbabilityTensorToJSArray[b] - predictProbabilityTensorToJSArray[a])
+          .slice(0, 3);
+
+          console.log(originalIndices)
+          const newDiagnosis = new DiagnosisModel({
+               UserId : DTOData.UserId,
+               ServiceType: "Visual Diagnosis",
+               DiagnosisCode: "VDS" + await generateDiagnosisCode(),   
+               Service: "Diagnosis",
+               Condition : [skinDiseaseLabels[originalIndices[0]],skinDiseaseLabels[originalIndices[1]],skinDiseaseLabels[originalIndices[2]]],
+               TimeStamp : new Date()
+          })
+   
+          const savedDiagnosis = await newDiagnosis.save()
           const response = {
-               ConfirmedDisease : confirmedDisease, 
-               OtherDisease : resultsArray
+               Diagnosis : savedDiagnosis, 
           }
          return await Apiresponse(200,statusMessage.SUCCESSFUL, "Disease classified", response)  
          
@@ -131,11 +149,9 @@ export const symptomDiagnosis = async (DTOData : ISymptomDiagnoseDTO ) => {
           const modelConfig : any = (await model).getConfig();
           var inputShape = modelConfig["layers"][0]["config"]["batchInputShape"]
           inputShape[0] = 1
-          console.log(inputShape)
 
           const testArray = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0]
           const testArrayTensor = tf.tensor3d(testArray,  inputShape)
-          console.log(testArrayTensor)
           
           // Predicting
           var predictProbabilityTensor = ((await model).predict(testArrayTensor) as tf.Tensor)

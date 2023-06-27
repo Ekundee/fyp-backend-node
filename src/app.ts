@@ -18,8 +18,9 @@ import rateRoute from "./route/rate.route"
 import messagingRoute from "./route/message.route"
 import sessionRoute from "./route/session.route"
 import mockRoute from "./route/mock.route"
+import diagnosisRoute from "./route/diagnosis.route"
 import { adminProtectedRouteChecker, apiKeyProtector, dbConnect, sessionChecker } from "./service/utility.service";
-import { KNNsymptom, symptomDiagnosis } from "./service/ai.service";
+import { symptomDiagnosis } from "./service/ai.service";
 import MessageModel from "./model/message.model";
 import { getUserFriend } from "./service/message.service"
 import mongoose from "mongoose"
@@ -55,6 +56,7 @@ app.use(rateRoute)
 app.use(messagingRoute)
 app.use(sessionRoute)
 app.use(mockRoute)
+app.use(diagnosisRoute)
 
 
 
@@ -139,4 +141,3 @@ io.on("connection", (socket)=>{
 // getUserFriend({Id : '6493606ef3f25058c6ec7c14'}).then(resp=>{
 //      console.log(resp.Data)
 // })
-KNNsymptom()
